@@ -1,0 +1,91 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/users": {
+            "post": {
+                "description": "새로운 사용자 생성 API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "새로운 사용자 생성 ✅",
+                "parameters": [
+                    {
+                        "description": "새로운 사용자 정보",
+                        "name": "CreateUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "성공적으로 사용자를 생성한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateUserResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "이미 존재하는 사용자가 있는 경우",
+                        "schema": {
+                            "$ref": "#/definitions/apperr.Apperr"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "apperr.Apperr": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "nickname"
+            ],
+            "properties": {
+                "biography": {
+                    "type": "string",
+                    "maxLength": 7
+                },
+                "nickname": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "biography": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

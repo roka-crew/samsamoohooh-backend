@@ -1,2 +1,14 @@
-listen: ":8080"
+name: "samsamoohooh"
+listen: "0.0.0.0:8080"
 env: "dev"
+
+postgres:
+  host: "localhost"
+  user: "postgres"
+  port: 5432
+  password: "Qwe123!"
+  dbName: "samsamoohooh"
+  options:
+    maxIdleConns: 10
+    maxOpenConns: 100
+    connMaxLifetime: "30m"

@@ -5,23 +5,29 @@ import (
 	"runtime"
 )
 
-type AppErr struct {
+type Apperr struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
+	Data    any    `json:"data"`
 }
 
-func New(message string) *AppErr {
-	return &AppErr{
+func New(message string) *Apperr {
+	return &Apperr{
 		Message: message,
 	}
 }
 
-func (e *AppErr) Error() string {
+func (e *Apperr) Error() string {
 	return e.Message
 }
 
-func (e *AppErr) WithStatus(status int) *AppErr {
+func (e *Apperr) WithStatus(status int) *Apperr {
 	e.Status = status
+	return e
+}
+
+func (e *Apperr) WithData(data any) *Apperr {
+	e.Data = data
 	return e
 }
 

@@ -1,17 +1,29 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
+	"github.com/roka-crew/samsamoohooh-backend/internal/handler"
+	"github.com/roka-crew/samsamoohooh-backend/internal/service"
+	"github.com/roka-crew/samsamoohooh-backend/internal/store"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/config"
+	"github.com/roka-crew/samsamoohooh-backend/pkg/database/postgres"
+	"github.com/roka-crew/samsamoohooh-backend/pkg/server/http"
+	"go.uber.org/fx"
 )
 
 func main() {
-	config, err := config.New("configs/config.yaml")
-	if err != nil {
-		log.Panicf("failed to new config")
-	}
+	fx.New(
+		fx.Supply("./configs/config.yaml"),
+		fx.Provide(
+			config.New,
+			postgres.New,
 
-	fmt.Println("parsed config: ", config)
+			store.NewUserStore,
+			service.NewUserSerivce,
+
+			http.NewServer,
+		),
+		fx.Invoke(
+			handler.NewUserHandler,
+		),
+	).Run()
 }
