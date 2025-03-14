@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	Name     string   `yaml:"name"`
-	Listen   string   `yaml:"listen"`
-	Env      string   `yaml:"env"`
-	Postgres DBConfig `yaml:"postgres"`
+	Env      string    `yaml:"env"`
+	Name     string    `yaml:"name"`
+	Listen   string    `yaml:"listen"`
+	Postgres DBConfig  `yaml:"postgres"`
+	JWT      JWTConfig `yaml:"jwt"`
 }
 
 func New(path string) (*Config, error) {
@@ -65,6 +66,32 @@ func (c *DBOptions) UnmarshalYAML(value *yaml.Node) error {
 		return err
 	}
 	c.ConnMaxLifetime = duration
+
+	return nil
+}
+
+type JWTConfig struct {
+	Secret   []byte        `yaml:"secret"`
+	Duration time.Duration `yaml:"duration"`
+}
+
+func (c *JWTConfig) UnmarshalYAML(value *yaml.Node) error {
+	var raw struct {
+		Secret   string `yaml:"secret"`
+		Duration string `yaml:"duration"`
+	}
+
+	if err := value.Decode(&raw); err != nil {
+		return err
+	}
+
+	duration, err := time.ParseDuration(raw.Duration)
+	if err != nil {
+		return err
+	}
+
+	c.Secret = []byte(raw.Secret)
+	c.Duration = duration
 
 	return nil
 }

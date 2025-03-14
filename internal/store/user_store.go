@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
+	"github.com/roka-crew/samsamoohooh-backend/internal/postgres"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
-	"github.com/roka-crew/samsamoohooh-backend/pkg/database/postgres"
 	"github.com/samber/lo"
 )
 
@@ -48,6 +48,14 @@ func (s UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams)
 
 	if params.OrderBy != "" {
 		db = db.Order(params.OrderBy + " " + params.Order.ToString())
+	}
+
+	if params.Limit > 0 {
+		db = db.Limit(params.Limit)
+	}
+
+	if params.Offset > 0 {
+		db = db.Offset(params.Offset)
 	}
 
 	var users domain.Users

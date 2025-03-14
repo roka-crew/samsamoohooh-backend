@@ -19,6 +19,10 @@ type ListUsersParams struct {
 	// order
 	Order   SortOrder
 	OrderBy string
+
+	// options
+	Limit  int
+	Offset int
 }
 
 type PatchUserParams struct {

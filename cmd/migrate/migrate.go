@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
+	"github.com/roka-crew/samsamoohooh-backend/internal/postgres"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/config"
-	"github.com/roka-crew/samsamoohooh-backend/pkg/database/postgres"
 )
 
 func main() {

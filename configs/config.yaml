@@ -12,3 +12,7 @@ postgres:
     maxIdleConns: 10
     maxOpenConns: 100
     connMaxLifetime: "30m"
+
+jwt:
+  secret: "j1pVm3mSCqAsTzYDljBwJhIMJl1ip6TPfthlUbRLBxbM9LVjLBADqwj3DA6wCrZP"
+  duration: "8760h" # 365 day

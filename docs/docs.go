@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/users": {
             "post": {
-                "description": "새로운 사용자 생성 API",
+                "description": "|message|status|description|\n|---|---|---|\n|` + "`" + `ERR_UESR_DUPLICATE` + "`" + `|409|이미 존재하는 사용자가 있는 경우|",
                 "consumes": [
                     "application/json"
                 ],
@@ -45,30 +45,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/domain.CreateUserResponse"
                         }
-                    },
-                    "409": {
-                        "description": "이미 존재하는 사용자가 있는 경우",
-                        "schema": {
-                            "$ref": "#/definitions/apperr.Apperr"
-                        }
                     }
                 }
             }
         }
     },
     "definitions": {
-        "apperr.Apperr": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
         "domain.CreateUserRequest": {
             "type": "object",
             "required": [

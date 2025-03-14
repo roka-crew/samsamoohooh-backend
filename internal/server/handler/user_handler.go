@@ -5,10 +5,10 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
-	"github.com/roka-crew/samsamoohooh-backend/internal/handler/validator"
+	"github.com/roka-crew/samsamoohooh-backend/internal/server"
+	"github.com/roka-crew/samsamoohooh-backend/internal/server/validator"
 	"github.com/roka-crew/samsamoohooh-backend/internal/service"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
-	"github.com/roka-crew/samsamoohooh-backend/pkg/server/http"
 )
 
 type UserHandler struct {
@@ -16,7 +16,7 @@ type UserHandler struct {
 }
 
 func NewUserHandler(
-	server *http.Server,
+	server *server.Server,
 	userService *service.UserService,
 ) *UserHandler {
 	handler := &UserHandler{
@@ -32,15 +32,17 @@ func NewUserHandler(
 }
 
 // CreateUser godoc
-// @Tags users
-// @Summary 새로운 사용자 생성 ✅
-// @Description 새로운 사용자 생성 API
-// @Accept json
-// @Produce json
-// @Param CreateUserRequest body domain.CreateUserRequest true "새로운 사용자 정보"
-// @Success 201 {object} domain.CreateUserResponse "성공적으로 사용자를 생성한 경우"
-// @Failure 409 {object} apperr.Apperr "이미 존재하는 사용자가 있는 경우"
-// @Router /users [post]
+//
+//	@Tags			users
+//	@Summary		새로운 사용자 생성 ✅
+//	@Description	|message|status|description|
+//	@Description	|---|---|---|
+//	@Description	|`ERR_UESR_DUPLICATE`|409|이미 존재하는 사용자가 있는 경우|
+//	@Accept			json
+//	@Produce		json
+//	@Param			CreateUserRequest	body		domain.CreateUserRequest	true	"새로운 사용자 정보"
+//	@Success		201					{object}	domain.CreateUserResponse	"성공적으로 사용자를 생성한 경우"
+//	@Router			/users [post]
 func (h UserHandler) CreateUser(c *fiber.Ctx) error {
 	var (
 		request  domain.CreateUserRequest
