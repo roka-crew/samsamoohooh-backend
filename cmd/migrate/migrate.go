@@ -19,7 +19,7 @@ func main() {
 		log.Panicf("failed to connection postgres: %v\n", err)
 	}
 
-	if err := db.AutoMigrate(&domain.User{}); err != nil {
+	if err := db.AutoMigrate(&domain.User{}, &domain.Group{}, &domain.Topic{}, &domain.Goal{}); err != nil {
 		log.Panicf("failed to auto migrate: %v\n", err)
 	}
 }

@@ -7,7 +7,7 @@ type User struct {
 	Nickname  string  `gorm:"column:nickname;type:varchar(255);unique"` // min(2), max(12)
 	Biography *string `gorm:"column:biography;type:varchar(255);"`      // min(0), max(14)
 
-	Groups []Group
+	Groups []Group `gorm:"many2many:user_group_mappers;"`
 	Goals  []Goal
 	Topics []Topic
 }
@@ -45,4 +45,18 @@ type DeleteUserParams struct {
 
 	// option
 	IsHardDelete bool
+}
+
+type AppendGroupsParams struct {
+	UserID   uint
+	GroupIDs []uint
+}
+
+type DeleteGroupsParams struct {
+	UserID   uint
+	GroupIDs []uint
+}
+
+type ListGroupsParams struct {
+	UserIDs []uint
 }

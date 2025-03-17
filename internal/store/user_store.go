@@ -7,6 +7,7 @@ import (
 	"github.com/roka-crew/samsamoohooh-backend/internal/postgres"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
 	"github.com/samber/lo"
+	"gorm.io/gorm"
 )
 
 type UserStore struct {
@@ -24,7 +25,6 @@ func NewUserStore(
 func (s UserStore) CreateUser(ctx context.Context, params domain.CreateUserParams) (domain.User, error) {
 	err := s.db.WithContext(ctx).Create(&params).Error
 	if err != nil {
-
 		return domain.User{}, apperr.NewInternalError(err)
 	}
 
@@ -104,4 +104,59 @@ func (u UserStore) DeleteUser(ctx context.Context, params domain.DeleteUserParam
 	}
 
 	return nil
+}
+
+func (u UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsParams) error {
+	wantAppendGroups := domain.Groups{}
+	for _, groupID := range params.GroupIDs {
+		wantAppendGroups = append(wantAppendGroups, domain.Group{
+			Model: gorm.Model{ID: groupID},
+		})
+	}
+
+	err := u.db.WithContext(ctx).
+		Model(&domain.User{}).
+		Where("id = ?", params.UserID).
+		Association("Groups").
+		Append(wantAppendGroups)
+	if err != nil {
+		return apperr.NewInternalError(err)
+	}
+
+	return nil
+}
+
+func (u UserStore) DeleteGroups(ctx context.Context, params domain.DeleteGroupsParams) error {
+	wantDeleteGroups := domain.Groups{}
+	for _, groupID := range params.GroupIDs {
+		wantDeleteGroups = append(wantDeleteGroups, domain.Group{
+			Model: gorm.Model{ID: groupID},
+		})
+	}
+
+	err := u.db.WithContext(ctx).
+		Model(&domain.User{}).
+		Where("id = ?", params.UserID).
+		Association("Groups").
+		Delete(wantDeleteGroups)
+	if err != nil {
+		return apperr.NewInternalError(err)
+	}
+
+	return nil
+}
+
+func (u UserStore) ListGroups(ctx context.Context, params domain.ListGroupsParams) (domain.Groups, error) {
+	var groups domain.Groups
+	err := u.db.WithContext(ctx).
+		Model(&domain.User{}).
+		Where("id IN ?", params.UserIDs).
+		Association("Groups").
+		Find(&groups)
+
+	if err != nil {
+		return domain.Groups{}, apperr.NewInternalError(err)
+	}
+
+	return domain.Groups{}, nil
 }
