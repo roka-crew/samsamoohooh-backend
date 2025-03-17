@@ -48,5 +48,5 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 }
 
 func (h AuthHandler) Validate(c *fiber.Ctx) error {
-	// TODO: 이거 해보기
+	return nil
 }

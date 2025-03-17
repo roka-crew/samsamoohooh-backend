@@ -6,6 +6,10 @@ type User struct {
 	gorm.Model
 	Nickname  string  `gorm:"column:nickname;type:varchar(255);unique"` // min(2), max(12)
 	Biography *string `gorm:"column:biography;type:varchar(255);"`      // min(0), max(14)
+
+	Groups []Group
+	Goals  []Goal
+	Topics []Topic
 }
 
 type CreateUserParams = User

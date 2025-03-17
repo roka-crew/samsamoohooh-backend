@@ -17,9 +17,9 @@ func (t Users) First() User {
 	return t[0]
 }
 
-func (t Users) Last() User {
-	if t.IsEmpty() {
+func (g Users) Last() User {
+	if g.IsEmpty() {
 		return User{}
 	}
-	return t[len(t)-1]
+	return g[len(g)-1]
 }
