@@ -63,7 +63,7 @@ func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequ
 		IDs: []uint{request.UserID},
 	})
 	if err != nil {
-		return domain.ErrUserNotFound
+		return err
 	}
 	if foundUsers.IsEmpty() {
 		return domain.ErrUserNotFound

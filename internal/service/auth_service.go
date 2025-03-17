@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server/token"
 	"github.com/roka-crew/samsamoohooh-backend/internal/store"
@@ -41,5 +42,33 @@ func (s AuthService) Login(ctx context.Context, request domain.LoginRequest) (do
 
 	return domain.LoginResponse{
 		Token: createdTokenString,
+	}, nil
+}
+
+func (s AuthService) Validate(ctx context.Context, request domain.ValidateRequest) (domain.ValidateResponse, error) {
+	const prefix = "Bearer "
+	if len(request.BearerToken) < len(prefix) || request.BearerToken[:len(prefix)] != prefix {
+		return domain.ValidateResponse{}, domain.ErrAuthInvalidFormat.WithStatus(fiber.StatusUnauthorized)
+
+	}
+
+	tokenString := request.BearerToken[len(prefix):]
+	claims, err := s.jwtMaker.VerifyToken(tokenString)
+	if err != nil {
+		return domain.ValidateResponse{}, err
+	}
+
+	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
+		IDs:   []uint{claims.ID},
+		Limit: 1,
+	})
+	if err != nil {
+		return domain.ValidateResponse{}, err
+	}
+
+	return domain.ValidateResponse{
+		UserID:    foundUsers.First().ID,
+		Nickname:  foundUsers.First().Nickname,
+		Biography: foundUsers.First().Biography,
 	}, nil
 }

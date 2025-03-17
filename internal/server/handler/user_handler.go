@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server"
+	"github.com/roka-crew/samsamoohooh-backend/internal/server/ctxutil"
+	"github.com/roka-crew/samsamoohooh-backend/internal/server/middleware"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server/validator"
 	"github.com/roka-crew/samsamoohooh-backend/internal/service"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
@@ -18,6 +20,7 @@ type UserHandler struct {
 func NewUserHandler(
 	server *server.Server,
 	userService *service.UserService,
+	authMiddleware *middleware.AuthMiddleware,
 ) *UserHandler {
 	handler := &UserHandler{
 		userService: userService,
@@ -26,6 +29,8 @@ func NewUserHandler(
 	users := server.Group("/users")
 	{
 		users.Post("/", handler.CreateUser)
+		users.Patch("/", authMiddleware.Authenticate, handler.PatchUser)
+		users.Delete("/", authMiddleware.Authenticate, handler.DeleteUser)
 	}
 
 	return handler
@@ -65,6 +70,54 @@ func (h UserHandler) CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusCreated).JSON(response)
 	case errors.Is(err, domain.ErrUserAlreadyExists):
 		return err.(*apperr.Apperr).WithStatus(fiber.StatusConflict)
+	default:
+		return err
+	}
+}
+
+func (h UserHandler) PatchUser(c *fiber.Ctx) error {
+	var (
+		request domain.PatchUserRequest
+		err     error
+	)
+
+	if err = c.BodyParser(&request); err != nil {
+		return err
+	}
+
+	request.UserID, err = ctxutil.GetUserID(c)
+	if err != nil {
+		return err
+	}
+
+	err = h.userService.PatchUser(c.Context(), request)
+
+	switch {
+	case err == nil:
+		return c.SendStatus(fiber.StatusNoContent)
+	case errors.Is(err, domain.ErrUserNotFound):
+		return err.(*apperr.Apperr).WithStatus(fiber.StatusNotFound)
+	default:
+		return err
+	}
+}
+
+func (h UserHandler) DeleteUser(c *fiber.Ctx) error {
+	var (
+		request domain.DeleteUserRequest
+		err     error
+	)
+
+	request.UserID, err = ctxutil.GetUserID(c)
+	if err != nil {
+		return err
+	}
+
+	err = h.userService.DeleteUser(c.Context(), request)
+
+	switch {
+	case err == nil:
+		return c.SendStatus(fiber.StatusNoContent)
 	default:
 		return err
 	}

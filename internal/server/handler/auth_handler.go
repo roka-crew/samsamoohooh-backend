@@ -48,5 +48,22 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 }
 
 func (h AuthHandler) Validate(c *fiber.Ctx) error {
-	return nil
+	var (
+		request  domain.ValidateRequest
+		response domain.ValidateResponse
+		err      error
+	)
+
+	if err = c.ReqHeaderParser(&request); err != nil {
+		return err
+	}
+
+	response, err = h.authService.Validate(c.Context(), request)
+
+	switch {
+	case err == nil:
+		return c.Status(fiber.StatusOK).JSON(response)
+	default:
+		return err
+	}
 }

@@ -1,10 +1,7 @@
 package middleware
 
 import (
-	"errors"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server/ctxutil"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server/token"
@@ -37,13 +34,9 @@ func (m AuthMiddleware) Authenticate(c *fiber.Ctx) error {
 	tokenString := authHeader[len(prefix):]
 	claims, err := m.jwtMaker.VerifyToken(tokenString)
 	if err != nil {
-		if errors.Is(err, jwt.ErrTokenExpired) {
-			return domain.ErrAuthExpiredToken.WithStatus(fiber.StatusUnauthorized)
-		}
-
-		return domain.ErrAuthInvalidToken.WithStatus(fiber.StatusUnauthorized)
+		return err
 	}
 
-	c.Locals(ctxutil.UserClaimsKey, claims)
+	c.Locals(ctxutil.UserIDKey, claims.ID)
 	return c.Next()
 }
