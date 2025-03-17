@@ -50,6 +50,18 @@ func (s UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams)
 		db = db.Order(params.OrderBy + " " + params.Order.ToString())
 	}
 
+	if params.WithGoals {
+		db = db.Preload("Goals")
+	}
+
+	if params.WithGroups {
+		db = db.Preload("Groups")
+	}
+
+	if params.WithTopics {
+		db = db.Preload("Topics")
+	}
+
 	if params.Limit > 0 {
 		db = db.Limit(params.Limit)
 	}
@@ -106,7 +118,7 @@ func (u UserStore) DeleteUser(ctx context.Context, params domain.DeleteUserParam
 	return nil
 }
 
-func (u UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsParams) error {
+func (s UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsParams) error {
 	wantAppendGroups := domain.Groups{}
 	for _, groupID := range params.GroupIDs {
 		wantAppendGroups = append(wantAppendGroups, domain.Group{
@@ -114,7 +126,7 @@ func (u UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsP
 		})
 	}
 
-	err := u.db.WithContext(ctx).
+	err := s.db.WithContext(ctx).
 		Model(&domain.User{}).
 		Where("id = ?", params.UserID).
 		Association("Groups").
@@ -126,19 +138,19 @@ func (u UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsP
 	return nil
 }
 
-func (u UserStore) DeleteGroups(ctx context.Context, params domain.DeleteGroupsParams) error {
-	wantDeleteGroups := domain.Groups{}
+func (s UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsParams) error {
+	wantRemoveGroups := domain.Groups{}
 	for _, groupID := range params.GroupIDs {
-		wantDeleteGroups = append(wantDeleteGroups, domain.Group{
+		wantRemoveGroups = append(wantRemoveGroups, domain.Group{
 			Model: gorm.Model{ID: groupID},
 		})
 	}
 
-	err := u.db.WithContext(ctx).
+	err := s.db.WithContext(ctx).
 		Model(&domain.User{}).
 		Where("id = ?", params.UserID).
 		Association("Groups").
-		Delete(wantDeleteGroups)
+		Delete(wantRemoveGroups)
 	if err != nil {
 		return apperr.NewInternalError(err)
 	}
@@ -146,17 +158,16 @@ func (u UserStore) DeleteGroups(ctx context.Context, params domain.DeleteGroupsP
 	return nil
 }
 
-func (u UserStore) ListGroups(ctx context.Context, params domain.ListGroupsParams) (domain.Groups, error) {
+func (s UserStore) FetchGroups(ctx context.Context, params domain.FetchGroupsParams) (domain.Groups, error) {
 	var groups domain.Groups
-	err := u.db.WithContext(ctx).
+	err := s.db.WithContext(ctx).
 		Model(&domain.User{}).
 		Where("id IN ?", params.UserIDs).
 		Association("Groups").
 		Find(&groups)
-
 	if err != nil {
 		return domain.Groups{}, apperr.NewInternalError(err)
 	}
 
-	return domain.Groups{}, nil
+	return groups, nil
 }

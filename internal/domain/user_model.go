@@ -24,6 +24,11 @@ type ListUsersParams struct {
 	Order   SortOrder
 	OrderBy string
 
+	// relation
+	WithGroups bool
+	WithGoals  bool
+	WithTopics bool
+
 	// options
 	Limit  int
 	Offset int
@@ -52,11 +57,11 @@ type AppendGroupsParams struct {
 	GroupIDs []uint
 }
 
-type DeleteGroupsParams struct {
+type RemoveGroupsParams struct {
 	UserID   uint
 	GroupIDs []uint
 }
 
-type ListGroupsParams struct {
+type FetchGroupsParams struct {
 	UserIDs []uint
 }
