@@ -4,7 +4,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server"
-	"github.com/roka-crew/samsamoohooh-backend/internal/server/middleware"
 	"github.com/roka-crew/samsamoohooh-backend/internal/service"
 )
 
@@ -15,7 +14,6 @@ type AuthHandler struct {
 func NewAuthHandler(
 	server *server.Server,
 	authService *service.AuthService,
-	authMiddleware *middleware.AuthMiddleware,
 ) *AuthHandler {
 	handler := &AuthHandler{
 		authService: authService,
@@ -24,12 +22,21 @@ func NewAuthHandler(
 	auth := server.Group("/auth")
 	{
 		auth.Post("/login", handler.Login)
-		auth.Post("/validate", authMiddleware.Authenticate, handler.Validate)
+		auth.Post("/validate", handler.Validate)
 	}
 
 	return handler
 }
 
+// Login godoc
+//
+//	@Tags		auth
+//	@Summary	로그인 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Param		LoginRequest	body		domain.LoginRequest		true	"로그인에 필요한 정보"
+//	@Success	200				{object}	domain.LoginResponse	"성공적으로 로그인을 성공한 경우"
+//	@Router		/auth/login [post]
 func (h AuthHandler) Login(c *fiber.Ctx) error {
 	var (
 		request  domain.LoginRequest
@@ -37,16 +44,27 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 		err      error
 	)
 
-	response, err = h.authService.Login(c.Context(), request)
-
-	switch {
-	case err == nil:
-		return c.Status(fiber.StatusOK).JSON(response)
-	default:
+	if err = c.BodyParser(&request); err != nil {
 		return err
 	}
+
+	response, err = h.authService.Login(c.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
+// Validate godoc
+//
+//	@Tags		auth
+//	@Summary	유효성 검증 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Param		Authorization	header		string					true	"Bearer 토큰"
+//	@Success	200				{object}	domain.ValidateResponse	"성공적으로 유효성 검증을 성공한 경우"
+//	@Router		/auth/validate [post]
 func (h AuthHandler) Validate(c *fiber.Ctx) error {
 	var (
 		request  domain.ValidateRequest
@@ -59,11 +77,9 @@ func (h AuthHandler) Validate(c *fiber.Ctx) error {
 	}
 
 	response, err = h.authService.Validate(c.Context(), request)
-
-	switch {
-	case err == nil:
-		return c.Status(fiber.StatusOK).JSON(response)
-	default:
+	if err != nil {
 		return err
 	}
+
+	return c.Status(fiber.StatusOK).JSON(response)
 }

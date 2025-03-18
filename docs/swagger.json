@@ -4,9 +4,255 @@
         "contact": {}
     },
     "paths": {
+        "/auth/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "로그인 ✅",
+                "parameters": [
+                    {
+                        "description": "로그인에 필요한 정보",
+                        "name": "LoginRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "성공적으로 로그인을 성공한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/validate": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "유효성 검증 ✅",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 토큰",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "성공적으로 유효성 검증을 성공한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ValidateResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/groups": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "모임 리스트 ✅",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "조회할 모임 개수",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "성공적으로 모임 리스트를 조회한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ListGroupsResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "새로운 모임 생성 ✅",
+                "parameters": [
+                    {
+                        "description": "생성할 모임 정보",
+                        "name": "CreateGroupRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "성공적으로 모임을 생성한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateGroupResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/groups/join": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "모임 참가 ✅",
+                "parameters": [
+                    {
+                        "description": "참여할 모임 정보",
+                        "name": "JoinGroupRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.JoinGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/groups/leave": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "모임 탈퇴 ✅",
+                "parameters": [
+                    {
+                        "description": "탈퇴할 모임 정보",
+                        "name": "LeaveGroupRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.LeaveGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/groups/{group-id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "모임 정보 수정 ✅",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "수정할 모임 ID",
+                        "name": "group-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "수정할 모임 정보",
+                        "name": "PatchGroupRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PatchGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/users": {
             "post": {
-                "description": "|message|status|description|\n|---|---|---|\n|`ERR_UESR_DUPLICATE`|409|이미 존재하는 사용자가 있는 경우|",
                 "consumes": [
                     "application/json"
                 ],
@@ -36,10 +282,116 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "사용자 삭제 ✅",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "사용자 정보 수정 ✅",
+                "parameters": [
+                    {
+                        "description": "수정할 사용자 정보",
+                        "name": "PatchUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PatchUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
             }
         }
     },
     "definitions": {
+        "domain.CreateGroupRequest": {
+            "type": "object",
+            "required": [
+                "bookAuthor",
+                "bookMaxPage",
+                "bookTitle"
+            ],
+            "properties": {
+                "bookAuthor": {
+                    "type": "string"
+                },
+                "bookMaxPage": {
+                    "type": "integer"
+                },
+                "bookPublisher": {
+                    "type": "string"
+                },
+                "bookTitle": {
+                    "type": "string"
+                },
+                "introduction": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.CreateGroupResponse": {
+            "type": "object",
+            "properties": {
+                "bookAuthor": {
+                    "type": "string"
+                },
+                "bookCurrentPage": {
+                    "type": "integer"
+                },
+                "bookMaxPage": {
+                    "type": "integer"
+                },
+                "bookPublisher": {
+                    "type": "string"
+                },
+                "bookTitle": {
+                    "type": "string"
+                },
+                "groupID": {
+                    "type": "integer"
+                },
+                "introduction": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.CreateUserRequest": {
             "type": "object",
             "required": [
@@ -48,7 +400,7 @@
             "properties": {
                 "biography": {
                     "type": "string",
-                    "maxLength": 7
+                    "maxLength": 14
                 },
                 "nickname": {
                     "type": "string"
@@ -56,6 +408,136 @@
             }
         },
         "domain.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "biography": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.GroupResponse": {
+            "type": "object",
+            "properties": {
+                "bookAuthor": {
+                    "type": "string"
+                },
+                "bookCurrentPage": {
+                    "type": "integer"
+                },
+                "bookMaxPage": {
+                    "type": "integer"
+                },
+                "bookPublisher": {
+                    "type": "string"
+                },
+                "bookTitle": {
+                    "type": "string"
+                },
+                "groupID": {
+                    "type": "integer"
+                },
+                "introduction": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.JoinGroupRequest": {
+            "type": "object",
+            "properties": {
+                "groupIDs": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "domain.LeaveGroupRequest": {
+            "type": "object",
+            "properties": {
+                "groupIDs": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "domain.ListGroupsResponse": {
+            "type": "object",
+            "properties": {
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.GroupResponse"
+                    }
+                }
+            }
+        },
+        "domain.LoginRequest": {
+            "type": "object",
+            "required": [
+                "nickname"
+            ],
+            "properties": {
+                "nickname": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.PatchGroupRequest": {
+            "type": "object",
+            "properties": {
+                "bookAuthor": {
+                    "type": "string"
+                },
+                "bookCurrentPage": {
+                    "type": "integer"
+                },
+                "bookMaxPage": {
+                    "type": "integer"
+                },
+                "bookPublisher": {
+                    "type": "string"
+                },
+                "bookTitle": {
+                    "type": "string"
+                },
+                "grouopID": {
+                    "type": "integer"
+                },
+                "introduction": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.PatchUserRequest": {
+            "type": "object",
+            "properties": {
+                "biography": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "description": "updates",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.ValidateResponse": {
             "type": "object",
             "properties": {
                 "biography": {

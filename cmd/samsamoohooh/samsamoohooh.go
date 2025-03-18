@@ -21,14 +21,22 @@ func main() {
 			postgres.New,
 
 			store.NewUserStore,
+			store.NewGroupStore,
+			store.NewGoalStore,
+			store.NewTopicStore,
+
+			service.NewAuthService,
 			service.NewUserSerivce,
+			service.NewGroupService,
 
 			token.NewJWTMaker,
-			middleware.NewAuthMiddleware,
 			server.NewServer,
+			middleware.NewAuthMiddleware,
 		),
 		fx.Invoke(
+			handler.NewAuthHandler,
 			handler.NewUserHandler,
+			handler.NewGroupHandler,
 		),
 	).Run()
 }

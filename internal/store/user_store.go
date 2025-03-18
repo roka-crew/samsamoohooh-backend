@@ -166,9 +166,8 @@ func (s UserStore) FetchGroups(ctx context.Context, params domain.FetchGroupsPar
 	}
 
 	var groups domain.Groups
-	err := s.db.WithContext(ctx).
-		Model(&domain.User{}).
-		Where("id IN ?", params.UserIDs).
+	err := db.WithContext(ctx).
+		Model(&domain.User{Model: gorm.Model{ID: params.UserID}}).
 		Association("Groups").
 		Find(&groups)
 	if err != nil {

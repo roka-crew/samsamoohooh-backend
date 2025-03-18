@@ -1,8 +1,42 @@
 definitions:
+  domain.CreateGroupRequest:
+    properties:
+      bookAuthor:
+        type: string
+      bookMaxPage:
+        type: integer
+      bookPublisher:
+        type: string
+      bookTitle:
+        type: string
+      introduction:
+        type: string
+    required:
+    - bookAuthor
+    - bookMaxPage
+    - bookTitle
+    type: object
+  domain.CreateGroupResponse:
+    properties:
+      bookAuthor:
+        type: string
+      bookCurrentPage:
+        type: integer
+      bookMaxPage:
+        type: integer
+      bookPublisher:
+        type: string
+      bookTitle:
+        type: string
+      groupID:
+        type: integer
+      introduction:
+        type: string
+    type: object
   domain.CreateUserRequest:
     properties:
       biography:
-        maxLength: 7
+        maxLength: 14
         type: string
       nickname:
         type: string
@@ -18,17 +52,282 @@ definitions:
       userID:
         type: integer
     type: object
+  domain.GroupResponse:
+    properties:
+      bookAuthor:
+        type: string
+      bookCurrentPage:
+        type: integer
+      bookMaxPage:
+        type: integer
+      bookPublisher:
+        type: string
+      bookTitle:
+        type: string
+      groupID:
+        type: integer
+      introduction:
+        type: string
+    type: object
+  domain.JoinGroupRequest:
+    properties:
+      groupIDs:
+        items:
+          type: integer
+        type: array
+    type: object
+  domain.LeaveGroupRequest:
+    properties:
+      groupIDs:
+        items:
+          type: integer
+        type: array
+    type: object
+  domain.ListGroupsResponse:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/domain.GroupResponse'
+        type: array
+    type: object
+  domain.LoginRequest:
+    properties:
+      nickname:
+        type: string
+    required:
+    - nickname
+    type: object
+  domain.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  domain.PatchGroupRequest:
+    properties:
+      bookAuthor:
+        type: string
+      bookCurrentPage:
+        type: integer
+      bookMaxPage:
+        type: integer
+      bookPublisher:
+        type: string
+      bookTitle:
+        type: string
+      grouopID:
+        type: integer
+      introduction:
+        type: string
+    type: object
+  domain.PatchUserRequest:
+    properties:
+      biography:
+        type: string
+      nickname:
+        description: updates
+        type: string
+    type: object
+  domain.ValidateResponse:
+    properties:
+      biography:
+        type: string
+      nickname:
+        type: string
+      userID:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
-  /users:
+  /auth/login:
     post:
       consumes:
       - application/json
-      description: |-
-        |message|status|description|
-        |---|---|---|
-        |`ERR_UESR_DUPLICATE`|409|이미 존재하는 사용자가 있는 경우|
+      parameters:
+      - description: 로그인에 필요한 정보
+        in: body
+        name: LoginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 성공적으로 로그인을 성공한 경우
+          schema:
+            $ref: '#/definitions/domain.LoginResponse'
+      summary: 로그인 ✅
+      tags:
+      - auth
+  /auth/validate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer 토큰
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 성공적으로 유효성 검증을 성공한 경우
+          schema:
+            $ref: '#/definitions/domain.ValidateResponse'
+      summary: 유효성 검증 ✅
+      tags:
+      - auth
+  /groups:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 조회할 모임 개수
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 성공적으로 모임 리스트를 조회한 경우
+          schema:
+            $ref: '#/definitions/domain.ListGroupsResponse'
+      security:
+      - BearerAuth: []
+      summary: 모임 리스트 ✅
+      tags:
+      - groups
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 생성할 모임 정보
+        in: body
+        name: CreateGroupRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 성공적으로 모임을 생성한 경우
+          schema:
+            $ref: '#/definitions/domain.CreateGroupResponse'
+      security:
+      - BearerAuth: []
+      summary: 새로운 모임 생성 ✅
+      tags:
+      - groups
+  /groups/{group-id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: 수정할 모임 ID
+        in: path
+        name: group-id
+        required: true
+        type: string
+      - description: 수정할 모임 정보
+        in: body
+        name: PatchGroupRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PatchGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 모임 정보 수정 ✅
+      tags:
+      - groups
+  /groups/join:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 참여할 모임 정보
+        in: body
+        name: JoinGroupRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.JoinGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 모임 참가 ✅
+      tags:
+      - groups
+  /groups/leave:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 탈퇴할 모임 정보
+        in: body
+        name: LeaveGroupRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LeaveGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 모임 탈퇴 ✅
+      tags:
+      - groups
+  /users:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 사용자 삭제 ✅
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: 수정할 사용자 정보
+        in: body
+        name: PatchUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PatchUserRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 사용자 정보 수정 ✅
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
       parameters:
       - description: 새로운 사용자 정보
         in: body

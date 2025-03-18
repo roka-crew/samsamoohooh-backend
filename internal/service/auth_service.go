@@ -33,6 +33,9 @@ func (s AuthService) Login(ctx context.Context, request domain.LoginRequest) (do
 	if err != nil {
 		return domain.LoginResponse{}, err
 	}
+	if foundUsers.IsEmpty() {
+		return domain.LoginResponse{}, domain.ErrUserNotFound
+	}
 
 	// (2) 해당 사용자의 토큰 생성
 	createdTokenString, err := s.jwtMaker.CreateTokenString(foundUsers.First().ID)
@@ -49,7 +52,6 @@ func (s AuthService) Validate(ctx context.Context, request domain.ValidateReques
 	const prefix = "Bearer "
 	if len(request.BearerToken) < len(prefix) || request.BearerToken[:len(prefix)] != prefix {
 		return domain.ValidateResponse{}, domain.ErrAuthInvalidFormat.WithStatus(fiber.StatusUnauthorized)
-
 	}
 
 	tokenString := request.BearerToken[len(prefix):]
@@ -66,9 +68,10 @@ func (s AuthService) Validate(ctx context.Context, request domain.ValidateReques
 		return domain.ValidateResponse{}, err
 	}
 
+	firstFoundUser := foundUsers.First()
 	return domain.ValidateResponse{
-		UserID:    foundUsers.First().ID,
-		Nickname:  foundUsers.First().Nickname,
-		Biography: foundUsers.First().Biography,
+		UserID:    firstFoundUser.ID,
+		Nickname:  firstFoundUser.Nickname,
+		Biography: firstFoundUser.Biography,
 	}, nil
 }

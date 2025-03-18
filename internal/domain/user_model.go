@@ -65,6 +65,6 @@ type RemoveGroupsParams struct {
 }
 
 type FetchGroupsParams struct {
-	Limit   int
-	UserIDs []uint
+	Limit  int
+	UserID uint
 }

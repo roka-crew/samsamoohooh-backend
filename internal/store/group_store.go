@@ -140,10 +140,9 @@ func (s GroupStore) AppendUser(ctx context.Context, params domain.AppendUserPara
 	}
 
 	err := s.db.WithContext(ctx).
-		Model(&domain.Group{}).
-		Where("id = ?", params.GroupID).
+		Model(&domain.Group{Model: gorm.Model{ID: params.GroupID}}).
 		Association("Users").
-		Append(wantAppendUser)
+		Append(&wantAppendUser)
 	if err != nil {
 		return apperr.NewInternalError(err)
 	}
@@ -160,8 +159,7 @@ func (s GroupStore) RemoveUsers(ctx context.Context, params domain.RemoveUsersPa
 	}
 
 	err := s.db.WithContext(ctx).
-		Model(&domain.Group{}).
-		Where("id = ?", params.GroupID).
+		Model(&domain.Group{Model: gorm.Model{ID: params.GroupID}}).
 		Association("Groups").
 		Delete(wantRemoveUsers)
 	if err != nil {
@@ -172,13 +170,14 @@ func (s GroupStore) RemoveUsers(ctx context.Context, params domain.RemoveUsersPa
 }
 
 func (s GroupStore) FetchUsers(ctx context.Context, params domain.FetchUsersParams) (domain.Users, error) {
-	var db = s.db.WithContext(ctx)
+	db := s.db.WithContext(ctx)
 
-	if len(params.GroupIDs) > 0 {
+	if params.Limit > 0 {
+		db = db.Limit(params.Limit)
 	}
 
 	var users domain.Users
-	err := s.db.WithContext(ctx).
+	err := db.
 		Model(&domain.Group{}).
 		Where("id IN ?", params.GroupIDs).
 		Association("Users").

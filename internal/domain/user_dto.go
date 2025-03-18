@@ -4,7 +4,7 @@ import "github.com/samber/lo"
 
 type CreateUserRequest struct {
 	Nickname  string  `json:"nickname" validate:"required"`
-	Biography *string `json:"biography" validate:"omitempty,max=7"`
+	Biography *string `json:"biography" validate:"omitempty,max=14"`
 }
 
 type CreateUserResponse struct {
@@ -60,7 +60,7 @@ type PatchUserRequest struct {
 	UserID uint `json:"-"`
 
 	// updates
-	Nickname  *string `json:"nickname" validate:"required"`
+	Nickname  *string `json:"nickname" validate:"omitempty"`
 	Biography *string `json:"biography" validate:"omitempty"`
 }
 

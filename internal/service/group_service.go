@@ -52,8 +52,8 @@ func (s GroupService) CreateGroup(ctx context.Context, request domain.CreateGrou
 func (s GroupService) ListGroups(ctx context.Context, request domain.ListGroupsRequest) (domain.ListGroupsResponse, error) {
 	// (1) 사용자의 구룹 정보를 조회
 	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserIDs: []uint{request.UserID},
-		Limit:   request.Limit,
+		UserID: request.UserID,
+		Limit:  request.Limit,
 	})
 	if err != nil {
 		return domain.ListGroupsResponse{}, err
@@ -65,8 +65,8 @@ func (s GroupService) ListGroups(ctx context.Context, request domain.ListGroupsR
 func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupRequest) error {
 	// (1) 요청한 사용자가, 변경하고자 하는 구룹에 속해있는지 확인
 	fetchedGrouops, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserIDs: []uint{request.UserID},
-		Limit:   1,
+		UserID: request.UserID,
+		Limit:  1,
 	})
 	if err != nil {
 		return err
@@ -95,7 +95,7 @@ func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupR
 func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupRequest) error {
 	// (1) 요청한 사용자가 이미 참가한 구룹이 있는지 확인
 	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserIDs: []uint{request.UserID},
+		UserID: request.UserID,
 	})
 	if err != nil {
 		return err
@@ -119,7 +119,7 @@ func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupReq
 func (s GroupService) LeaveGroup(ctx context.Context, request domain.LeaveGroupRequest) error {
 	// (1) 요청한 사용자의 탈퇴 구룹 리스트에 속해 있는지 확인
 	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserIDs: []uint{request.UserID},
+		UserID: request.UserID,
 	})
 	if err != nil {
 		return err
