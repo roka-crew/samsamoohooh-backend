@@ -55,8 +55,8 @@ type DeleteUserParams struct {
 }
 
 type AppendGroupsParams struct {
-	UserID   uint
 	GroupIDs []uint
+	UserID   uint
 }
 
 type RemoveGroupsParams struct {

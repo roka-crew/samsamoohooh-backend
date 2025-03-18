@@ -104,7 +104,6 @@ func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupReq
 		return domain.ErrUserAlreadyInGroup
 	}
 
-	// (2) 요청한 사용자를 구룹에 속하게 하기
 	err = s.userStore.AppendGroups(ctx, domain.AppendGroupsParams{
 		UserID:   request.UserID,
 		GroupIDs: request.GroupIDs,
