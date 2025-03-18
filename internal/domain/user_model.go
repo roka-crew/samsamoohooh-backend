@@ -1,6 +1,8 @@
 package domain
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -63,5 +65,6 @@ type RemoveGroupsParams struct {
 }
 
 type FetchGroupsParams struct {
+	Limit   int
 	UserIDs []uint
 }

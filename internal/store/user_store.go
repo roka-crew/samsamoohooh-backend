@@ -159,6 +159,12 @@ func (s UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsP
 }
 
 func (s UserStore) FetchGroups(ctx context.Context, params domain.FetchGroupsParams) (domain.Groups, error) {
+	db := s.db.WithContext(ctx)
+
+	if params.Limit > 0 {
+		db = db.Limit(params.Limit)
+	}
+
 	var groups domain.Groups
 	err := s.db.WithContext(ctx).
 		Model(&domain.User{}).

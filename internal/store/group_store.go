@@ -172,6 +172,11 @@ func (s GroupStore) RemoveUsers(ctx context.Context, params domain.RemoveUsersPa
 }
 
 func (s GroupStore) FetchUsers(ctx context.Context, params domain.FetchUsersParams) (domain.Users, error) {
+	var db = s.db.WithContext(ctx)
+
+	if len(params.GroupIDs) > 0 {
+	}
+
 	var users domain.Users
 	err := s.db.WithContext(ctx).
 		Model(&domain.Group{}).

@@ -23,3 +23,13 @@ func (g Groups) Last() Group {
 	}
 	return g[len(g)-1]
 }
+
+func (g Groups) IDs() []uint {
+	ids := make([]uint, 0, len(g))
+
+	for _, group := range g {
+		ids = append(ids, group.ID)
+	}
+
+	return ids
+}
