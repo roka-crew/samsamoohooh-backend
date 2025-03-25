@@ -1,10 +1,10 @@
 package domain
 
 type CreateTopicRequest struct {
-	UserID  uint   `json:"-"`
-	GroupID uint   `json:"groupID"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	RequesterID uint   `json:"-"       validate:"required,gte=1"`
+	GroupID     uint   `json:"groupID" validate:"required,gte=1"`
+	Title       string `json:"title"   validate:"required,min=4,max=46"`
+	Content     string `json:"content" validate:"required,min=4,max=128"`
 }
 
 type CreateTopicResponse struct {
@@ -14,9 +14,9 @@ type CreateTopicResponse struct {
 }
 
 type ListTopicsRequest struct {
-	UserID  uint `json:"-"`
-	GroupID uint `json:"groupID"`
-	Limit   int  `json:"limit"`
+	RequesterID uint `json:"-" validate:"required,gte=1"`
+	GroupID     uint `json:"groupID" validate:"required,gte=1"`
+	Limit       int  `json:"limit"  validate:"required,gte=1,lte=300"`
 }
 
 type ListTopicsResponse struct {

@@ -18,5 +18,4 @@ var (
 	ErrAuthInvalidSigningMethod = apperr.New("ERR_AUTH_INVALID_SIGNING_METHOD") // 잘못된 서명 방식일 때
 	ErrAuthInvalidClaims        = apperr.New("ERR_AUTH_INVALID_CLAIMS")         // 토큰 클레임이 잘못되었을 때
 	ErrAuthMalformedToken       = apperr.New("ERR_AUTH_MALFORMED_TOKEN")        // 토큰 형식이 잘못되었을 때
-
 )

@@ -8,7 +8,7 @@ import (
 
 type Topic struct {
 	ID        uint   `gorm:"primarykey"`
-	Title     string `gorm:"column:title;type:varchar(255)"`   // min(4) max(24)
+	Title     string `gorm:"column:title;type:varchar(255)"`   // min(4) max(64)
 	Content   string `gorm:"column:content;type:varchar(255)"` // min(4) max(128)
 	CreatedAt time.Time
 	UpdatedAt time.Time

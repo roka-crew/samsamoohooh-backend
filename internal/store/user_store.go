@@ -175,3 +175,20 @@ func (s UserStore) FetchGroups(ctx context.Context, params domain.FetchGroupsPar
 
 	return groups, nil
 }
+
+func (s UserStore) HasGroups(ctx context.Context, params domain.HasGroupsParams) (bool, error) {
+	var exists bool
+	err := s.db.WithContext(ctx).
+		Raw(`
+			SELECT EXISTS (
+				SELECT 1	
+				FROM user_group_mappers
+				WHERE user_id = ? AND group_ID IN ?
+			)`, params.UserID, params.GroupIDs).
+		Scan(&exists).Error
+	if err != nil {
+		return false, apperr.NewInternalError(err)
+	}
+
+	return exists, nil
+}

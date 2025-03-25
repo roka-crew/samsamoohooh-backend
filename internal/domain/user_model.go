@@ -73,3 +73,8 @@ type FetchGroupsParams struct {
 	Limit  int
 	UserID uint
 }
+
+type HasGroupsParams struct {
+	UserID   uint
+	GroupIDs []uint
+}
