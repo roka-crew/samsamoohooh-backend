@@ -61,7 +61,7 @@ func (h GroupHandler) CreateGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	request.UserID, err = ctxutil.GetUserID(c)
+	request.RequesterID, err = ctxutil.GetUserID(c)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func (h GroupHandler) ListGroups(c *fiber.Ctx) error {
 		return err
 	}
 
-	if request.UserID, err = ctxutil.GetUserID(c); err != nil {
+	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 
@@ -172,7 +172,7 @@ func (h GroupHandler) JoinGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	if request.UserID, err = ctxutil.GetUserID(c); err != nil {
+	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 
@@ -208,7 +208,7 @@ func (h GroupHandler) LeaveGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	if request.UserID, err = ctxutil.GetUserID(c); err != nil {
+	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 

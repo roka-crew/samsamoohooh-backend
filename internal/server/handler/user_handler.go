@@ -39,7 +39,7 @@ func NewUserHandler(
 //	@Summary	새로운 사용자 생성 ✅
 //	@Accept		json
 //	@Produce	json
-//	@Param		CreateUserRequest	body		domain.CreateUserRequest	true	"새로운 사용자 정보"
+//	@Param		CreateUserRequest	body		domain.CreateUserRequest	true	"생성할 사용자 정보"
 //	@Success	201					{object}	domain.CreateUserResponse	"성공적으로 사용자를 생성한 경우"
 //	@Router		/users [post]
 func (h UserHandler) CreateUser(c *fiber.Ctx) error {
@@ -85,8 +85,12 @@ func (h UserHandler) PatchUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	request.UserID, err = ctxutil.GetUserID(c)
+	request.RequesterID, err = ctxutil.GetUserID(c)
 	if err != nil {
+		return err
+	}
+
+	if err = validator.Validate(&request); err != nil {
 		return err
 	}
 
@@ -113,8 +117,12 @@ func (h UserHandler) DeleteUser(c *fiber.Ctx) error {
 		err     error
 	)
 
-	request.UserID, err = ctxutil.GetUserID(c)
+	request.RequesterID, err = ctxutil.GetUserID(c)
 	if err != nil {
+		return err
+	}
+
+	if err = validator.Validate(&request); err != nil {
 		return err
 	}
 

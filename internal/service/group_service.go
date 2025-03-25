@@ -40,7 +40,7 @@ func (s GroupService) CreateGroup(ctx context.Context, request domain.CreateGrou
 	// (2) 새로운 구룹에 사용자 추가하기
 	err = s.groupStore.AppendUser(ctx, domain.AppendUserParams{
 		GroupID: createdGroup.ID,
-		UserIDs: []uint{request.UserID},
+		UserIDs: []uint{request.RequesterID},
 	})
 	if err != nil {
 		return domain.CreateGroupResponse{}, err
@@ -52,7 +52,7 @@ func (s GroupService) CreateGroup(ctx context.Context, request domain.CreateGrou
 func (s GroupService) ListGroups(ctx context.Context, request domain.ListGroupsRequest) (domain.ListGroupsResponse, error) {
 	// (1) 사용자의 구룹 정보를 조회
 	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.UserID,
+		UserID: request.RequesterID,
 		Limit:  request.Limit,
 	})
 	if err != nil {
@@ -65,7 +65,7 @@ func (s GroupService) ListGroups(ctx context.Context, request domain.ListGroupsR
 func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupRequest) error {
 	// (1) 요청한 사용자가, 변경하고자 하는 구룹에 속해있는지 확인
 	fetchedGrouops, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.UserID,
+		UserID: request.RequesterID,
 		Limit:  1,
 	})
 	if err != nil {
@@ -95,7 +95,7 @@ func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupR
 func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupRequest) error {
 	// (1) 요청한 사용자가 이미 참가한 구룹이 있는지 확인
 	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.UserID,
+		UserID: request.RequesterID,
 	})
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupReq
 	}
 
 	err = s.userStore.AppendGroups(ctx, domain.AppendGroupsParams{
-		UserID:   request.UserID,
+		UserID:   request.RequesterID,
 		GroupIDs: request.GroupIDs,
 	})
 	if err != nil {
@@ -118,7 +118,7 @@ func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupReq
 func (s GroupService) LeaveGroup(ctx context.Context, request domain.LeaveGroupRequest) error {
 	// (1) 요청한 사용자의 탈퇴 구룹 리스트에 속해 있는지 확인
 	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.UserID,
+		UserID: request.RequesterID,
 	})
 	if err != nil {
 		return err
@@ -132,7 +132,7 @@ func (s GroupService) LeaveGroup(ctx context.Context, request domain.LeaveGroupR
 
 	// (2) 사용자 구룹에서 나가기
 	err = s.userStore.RemoveGroups(ctx, domain.RemoveGroupsParams{
-		UserID:   request.UserID,
+		UserID:   request.RequesterID,
 		GroupIDs: request.GrouopIDs,
 	})
 	if err != nil {

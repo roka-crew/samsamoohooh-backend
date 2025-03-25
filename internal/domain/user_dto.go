@@ -3,8 +3,8 @@ package domain
 import "github.com/samber/lo"
 
 type CreateUserRequest struct {
-	Nickname  string  `json:"nickname" validate:"required"`
-	Biography *string `json:"biography" validate:"omitempty,max=14"`
+	Nickname  string  `json:"nickname"  validate:"required,min=2,max=12"`
+	Biography *string `json:"biography" validate:"max=14"`
 }
 
 type CreateUserResponse struct {
@@ -21,50 +21,16 @@ func (m User) ToCreateUserResponse() CreateUserResponse {
 	}
 }
 
-type ListUsersRequest struct {
-	UserIDs     []uint   `query:"userIDs"`
-	Nicknames   []string `query:"nicknames"`
-	Biographies []string `query:"biographies" `
-}
-
-type ListUsersResponse struct {
-	Users []UsersResponse `json:"users"`
-}
-
-type UsersResponse struct {
-	UserID    uint   `json:"userID"`
-	Nickname  string `json:"nickname"`
-	Biography string `json:"biography"`
-}
-
-func (m Users) ToListUsersResponse() ListUsersResponse {
-	usersResponse := make([]UsersResponse, 0, len(m))
-
-	for _, user := range m {
-		usersResponse = append(usersResponse, UsersResponse{
-			UserID:    user.ID,
-			Nickname:  user.Nickname,
-			Biography: lo.FromPtr(user.Biography),
-		})
-	}
-
-	listUsersResponse := ListUsersResponse{
-		Users: usersResponse,
-	}
-
-	return listUsersResponse
-}
-
 type PatchUserRequest struct {
 	// conditions
-	UserID uint `json:"-"`
+	RequesterID uint `json:"-" validate:"required,gte=1"`
 
 	// updates
-	Nickname  *string `json:"nickname" validate:"omitempty"`
-	Biography *string `json:"biography" validate:"omitempty"`
+	Nickname  *string `json:"nickname"  validate:"min=2,max=12"`
+	Biography *string `json:"biography" validate:"max=14"`
 }
 
 type DeleteUserRequest struct {
 	// conditions
-	UserID uint `json:"-"`
+	RequesterID uint `json:"-" validate:"required,gte=1"`
 }

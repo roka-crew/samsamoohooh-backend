@@ -43,24 +43,10 @@ func (s UserService) CreateUser(ctx context.Context, request domain.CreateUserRe
 	return createdUser.ToCreateUserResponse(), nil
 }
 
-func (s UserService) ListUsers(ctx context.Context, request domain.ListUsersRequest) (domain.ListUsersResponse, error) {
-	// (1) 사용자 조회
-	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
-		IDs:         request.UserIDs,
-		Nicknames:   request.Nicknames,
-		Biographies: request.Biographies,
-	})
-	if err != nil {
-		return domain.ListUsersResponse{}, err
-	}
-
-	return foundUsers.ToListUsersResponse(), nil
-}
-
 func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequest) error {
 	// (1) 수정하고자 하는 사용자가 존재하는지 확인
 	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
-		IDs: []uint{request.UserID},
+		IDs: []uint{request.RequesterID},
 	})
 	if err != nil {
 		return err
@@ -71,7 +57,7 @@ func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequ
 
 	// (2) 사용자 수정
 	err = s.userStore.PatchUser(ctx, domain.PatchUserParams{
-		ID:        request.UserID,
+		ID:        request.RequesterID,
 		Nickname:  request.Nickname,
 		Biography: request.Biography,
 	})
@@ -84,7 +70,7 @@ func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequ
 
 func (s UserService) DeleteUser(ctx context.Context, request domain.DeleteUserRequest) error {
 	err := s.userStore.DeleteUser(ctx, domain.DeleteUserParams{
-		ID: request.UserID,
+		ID: request.RequesterID,
 	})
 	if err != nil {
 		return err

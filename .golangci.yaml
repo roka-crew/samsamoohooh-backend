@@ -1,0 +1,11 @@
+linters:
+  enable:
+    - tagalign
+
+linters-settings:
+  tagalign:
+    # 정렬 활성화 여부 
+    align: true
+
+    # 태그 정렬 활성화 여부 (알파벳 기준 오름차순) 
+    sort: true

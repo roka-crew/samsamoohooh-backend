@@ -1,13 +1,18 @@
 package domain
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
+	ID        uint    `gorm:"primarykey"`
 	Nickname  string  `gorm:"column:nickname;type:varchar(255);unique"` // min(2), max(12)
 	Biography *string `gorm:"column:biography;type:varchar(255);"`      // min(0), max(14)
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 
 	Groups []Group `gorm:"many2many:user_group_mappers;"`
 	Goals  []Goal

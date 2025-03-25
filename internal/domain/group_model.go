@@ -1,18 +1,23 @@
 package domain
 
 import (
+	"time"
+
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 )
 
 type Group struct {
-	gorm.Model
-	Introduction    *string `gorm:"column:introduction;type:varchar(255)"`
-	BookTitle       string  `gorm:"column:book_title;type:varchar(255)"`
-	BookAuthor      string  `gorm:"column:book_author;type:varchar(255);null"`
-	BookPublisher   *string `gorm:"column:book_publisher;type:varchar(255);null"`
-	BookMaxPage     int     `gorm:"column:book_max_page;type:integer"`
-	BookCurrentPage int     `gorm:"column:book_current_page;type:integer;default:0"`
+	ID              uint    `gorm:"primarykey"`
+	Introduction    *string `gorm:"column:introduction;type:varchar(255)"`           // min(0), max(255)
+	BookTitle       string  `gorm:"column:book_title;type:varchar(255)"`             // min(1), max(255)
+	BookAuthor      string  `gorm:"column:book_author;type:varchar(255);null"`       // min(1), max(255)
+	BookPublisher   *string `gorm:"column:book_publisher;type:varchar(255);null"`    // min(0), max(255)
+	BookMaxPage     int     `gorm:"column:book_max_page;type:integer"`               // gte(1)
+	BookCurrentPage int     `gorm:"column:book_current_page;type:integer;default:0"` // gte(1)
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	DeletedAt       gorm.DeletedAt `gorm:"index"`
 
 	Users []User `gorm:"many2many:user_group_mappers;"`
 	Goals []Goal

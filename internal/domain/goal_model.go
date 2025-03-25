@@ -7,9 +7,12 @@ import (
 )
 
 type Goal struct {
-	gorm.Model
-	Page     int       `gorm:"column:page;type:integer"`
-	Deadline time.Time `gorm:"column:deadline;type:timestamp"`
+	ID        uint      `gorm:"primarykey"`
+	Page      int       `gorm:"column:page;type:integer"`
+	Deadline  time.Time `gorm:"column:deadline;type:timestamp"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 
 	UserID  uint
 	GroupID uint

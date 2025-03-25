@@ -7,7 +7,6 @@ import (
 	"github.com/roka-crew/samsamoohooh-backend/internal/postgres"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
 	"github.com/samber/lo"
-	"gorm.io/gorm"
 )
 
 type UserStore struct {
@@ -122,7 +121,7 @@ func (s UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsP
 	wantAppendGroups := domain.Groups{}
 	for _, groupID := range params.GroupIDs {
 		wantAppendGroups = append(wantAppendGroups, domain.Group{
-			Model: gorm.Model{ID: groupID},
+			ID: groupID,
 		})
 	}
 
@@ -142,7 +141,7 @@ func (s UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsP
 	wantRemoveGroups := domain.Groups{}
 	for _, groupID := range params.GroupIDs {
 		wantRemoveGroups = append(wantRemoveGroups, domain.Group{
-			Model: gorm.Model{ID: groupID},
+			ID: groupID,
 		})
 	}
 
@@ -167,7 +166,7 @@ func (s UserStore) FetchGroups(ctx context.Context, params domain.FetchGroupsPar
 
 	var groups domain.Groups
 	err := db.WithContext(ctx).
-		Model(&domain.User{Model: gorm.Model{ID: params.UserID}}).
+		Model(&domain.User{ID: params.UserID}).
 		Association("Groups").
 		Find(&groups)
 	if err != nil {
