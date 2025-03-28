@@ -79,6 +79,151 @@ const docTemplate = `{
                 }
             }
         },
+        "/goals": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "목표 목록 조회 ✅",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "goalIDs",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "목표 목록 조회 성공",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ListGoalsResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "새로운 목표 생성 ✅",
+                "parameters": [
+                    {
+                        "description": "생성할 목표 정보",
+                        "name": "CreateGoalReqeust",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateGoalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "성공적으로 목표를 생성한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateGoalResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "목표 삭제 ✅",
+                "parameters": [
+                    {
+                        "description": "삭제할 목표 정보",
+                        "name": "DeleteGoalRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.DeleteGoalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "목표 정보 수정 ✅",
+                "parameters": [
+                    {
+                        "description": "수정할 목표 정보",
+                        "name": "PatchGoalRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PatchGoalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/groups": {
             "get": {
                 "security": [
@@ -262,6 +407,152 @@ const docTemplate = `{
                 }
             }
         },
+        "/topics": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "topics"
+                ],
+                "summary": "주제 목록 조회 ✅",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "name": "groupID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maximum": 300,
+                        "minimum": 1,
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "주제 목록 조회 성공",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ListTopicsResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "topics"
+                ],
+                "summary": "새로운 주제 생성 ✅",
+                "parameters": [
+                    {
+                        "description": "생성할 주제 정보",
+                        "name": "CreateTopicReqeust",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateTopicRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "성공적으로 주제를 생성한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateTopicResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "topics"
+                ],
+                "summary": "주제 삭제 ✅",
+                "parameters": [
+                    {
+                        "description": "삭제할 주제 정보",
+                        "name": "DeleteTopicRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.DeleteTopicRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "topics"
+                ],
+                "summary": "주제 정보 수정 ✅",
+                "parameters": [
+                    {
+                        "description": "수정할 주제 정보",
+                        "name": "PatchTopicRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.PatchTopicRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/users": {
             "post": {
                 "consumes": [
@@ -352,6 +643,34 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.CreateGoalRequest": {
+            "type": "object",
+            "properties": {
+                "bookPage": {
+                    "type": "integer"
+                },
+                "deadline": {
+                    "type": "string"
+                },
+                "groupID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.CreateGoalResponse": {
+            "type": "object",
+            "properties": {
+                "bookPage": {
+                    "type": "integer"
+                },
+                "deadline": {
+                    "type": "integer"
+                },
+                "goalID": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.CreateGroupRequest": {
             "type": "object",
             "required": [
@@ -410,6 +729,44 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.CreateTopicRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "groupID",
+                "title"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 4
+                },
+                "groupID": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 46,
+                    "minLength": 4
+                }
+            }
+        },
+        "domain.CreateTopicResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "topic_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "domain.CreateUserRequest": {
             "type": "object",
             "required": [
@@ -437,6 +794,40 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.DeleteGoalRequest": {
+            "type": "object",
+            "properties": {
+                "goalID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.DeleteTopicRequest": {
+            "type": "object",
+            "required": [
+                "topicID"
+            ],
+            "properties": {
+                "topicID": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "domain.GoalResponse": {
+            "type": "object",
+            "properties": {
+                "bookPage": {
+                    "type": "integer"
+                },
+                "deadline": {
+                    "type": "integer"
+                },
+                "goalID": {
                     "type": "integer"
                 }
             }
@@ -495,6 +886,17 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.ListGoalsResponse": {
+            "type": "object",
+            "properties": {
+                "goals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.GoalResponse"
+                    }
+                }
+            }
+        },
         "domain.ListGroupsResponse": {
             "type": "object",
             "properties": {
@@ -502,6 +904,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/domain.GroupResponse"
+                    }
+                }
+            }
+        },
+        "domain.ListTopicsResponse": {
+            "type": "object",
+            "properties": {
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.TopicResponse"
                     }
                 }
             }
@@ -522,6 +935,20 @@ const docTemplate = `{
             "properties": {
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "domain.PatchGoalRequest": {
+            "type": "object",
+            "properties": {
+                "bookPage": {
+                    "type": "integer"
+                },
+                "deadline": {
+                    "type": "string"
+                },
+                "goalID": {
+                    "type": "integer"
                 }
             }
         },
@@ -563,6 +990,28 @@ const docTemplate = `{
                 }
             }
         },
+        "domain.PatchTopicRequest": {
+            "type": "object",
+            "required": [
+                "topicID"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 4
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 46,
+                    "minLength": 4
+                },
+                "topicID": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
         "domain.PatchUserRequest": {
             "type": "object",
             "properties": {
@@ -575,6 +1024,20 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 12,
                     "minLength": 2
+                }
+            }
+        },
+        "domain.TopicResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "topic_id": {
+                    "type": "integer"
                 }
             }
         },

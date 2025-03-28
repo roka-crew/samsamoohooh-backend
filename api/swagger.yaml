@@ -1,4 +1,22 @@
 definitions:
+  domain.CreateGoalRequest:
+    properties:
+      bookPage:
+        type: integer
+      deadline:
+        type: string
+      groupID:
+        type: integer
+    type: object
+  domain.CreateGoalResponse:
+    properties:
+      bookPage:
+        type: integer
+      deadline:
+        type: integer
+      goalID:
+        type: integer
+    type: object
   domain.CreateGroupRequest:
     properties:
       bookAuthor:
@@ -40,6 +58,33 @@ definitions:
       introduction:
         type: string
     type: object
+  domain.CreateTopicRequest:
+    properties:
+      content:
+        maxLength: 128
+        minLength: 4
+        type: string
+      groupID:
+        minimum: 1
+        type: integer
+      title:
+        maxLength: 46
+        minLength: 4
+        type: string
+    required:
+    - content
+    - groupID
+    - title
+    type: object
+  domain.CreateTopicResponse:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+      topic_id:
+        type: integer
+    type: object
   domain.CreateUserRequest:
     properties:
       biography:
@@ -59,6 +104,28 @@ definitions:
       nickname:
         type: string
       userID:
+        type: integer
+    type: object
+  domain.DeleteGoalRequest:
+    properties:
+      goalID:
+        type: integer
+    type: object
+  domain.DeleteTopicRequest:
+    properties:
+      topicID:
+        minimum: 1
+        type: integer
+    required:
+    - topicID
+    type: object
+  domain.GoalResponse:
+    properties:
+      bookPage:
+        type: integer
+      deadline:
+        type: integer
+      goalID:
         type: integer
     type: object
   domain.GroupResponse:
@@ -96,11 +163,25 @@ definitions:
     required:
     - groupIDs
     type: object
+  domain.ListGoalsResponse:
+    properties:
+      goals:
+        items:
+          $ref: '#/definitions/domain.GoalResponse'
+        type: array
+    type: object
   domain.ListGroupsResponse:
     properties:
       groups:
         items:
           $ref: '#/definitions/domain.GroupResponse'
+        type: array
+    type: object
+  domain.ListTopicsResponse:
+    properties:
+      topics:
+        items:
+          $ref: '#/definitions/domain.TopicResponse'
         type: array
     type: object
   domain.LoginRequest:
@@ -114,6 +195,15 @@ definitions:
     properties:
       token:
         type: string
+    type: object
+  domain.PatchGoalRequest:
+    properties:
+      bookPage:
+        type: integer
+      deadline:
+        type: string
+      goalID:
+        type: integer
     type: object
   domain.PatchGroupRequest:
     properties:
@@ -143,6 +233,22 @@ definitions:
     required:
     - grouopID
     type: object
+  domain.PatchTopicRequest:
+    properties:
+      content:
+        maxLength: 128
+        minLength: 4
+        type: string
+      title:
+        maxLength: 46
+        minLength: 4
+        type: string
+      topicID:
+        minimum: 1
+        type: integer
+    required:
+    - topicID
+    type: object
   domain.PatchUserRequest:
     properties:
       biography:
@@ -153,6 +259,15 @@ definitions:
         maxLength: 12
         minLength: 2
         type: string
+    type: object
+  domain.TopicResponse:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+      topic_id:
+        type: integer
     type: object
   domain.ValidateResponse:
     properties:
@@ -207,6 +322,94 @@ paths:
       summary: 유효성 검증 ✅
       tags:
       - auth
+  /goals:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 삭제할 목표 정보
+        in: body
+        name: DeleteGoalRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.DeleteGoalRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 목표 삭제 ✅
+      tags:
+      - goals
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - collectionFormat: csv
+        in: query
+        items:
+          type: integer
+        name: goalIDs
+        type: array
+      - in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 목표 목록 조회 성공
+          schema:
+            $ref: '#/definitions/domain.ListGoalsResponse'
+      security:
+      - BearerAuth: []
+      summary: 목표 목록 조회 ✅
+      tags:
+      - goals
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: 수정할 목표 정보
+        in: body
+        name: PatchGoalRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PatchGoalRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 목표 정보 수정 ✅
+      tags:
+      - goals
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 생성할 목표 정보
+        in: body
+        name: CreateGoalReqeust
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateGoalRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 성공적으로 목표를 생성한 경우
+          schema:
+            $ref: '#/definitions/domain.CreateGoalResponse'
+      security:
+      - BearerAuth: []
+      summary: 새로운 목표 생성 ✅
+      tags:
+      - goals
   /groups:
     get:
       consumes:
@@ -318,6 +521,96 @@ paths:
       summary: 모임 탈퇴 ✅
       tags:
       - groups
+  /topics:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 삭제할 주제 정보
+        in: body
+        name: DeleteTopicRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.DeleteTopicRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 주제 삭제 ✅
+      tags:
+      - topics
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        minimum: 1
+        name: groupID
+        required: true
+        type: integer
+      - in: query
+        maximum: 300
+        minimum: 1
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 주제 목록 조회 성공
+          schema:
+            $ref: '#/definitions/domain.ListTopicsResponse'
+      security:
+      - BearerAuth: []
+      summary: 주제 목록 조회 ✅
+      tags:
+      - topics
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: 수정할 주제 정보
+        in: body
+        name: PatchTopicRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PatchTopicRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: 주제 정보 수정 ✅
+      tags:
+      - topics
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 생성할 주제 정보
+        in: body
+        name: CreateTopicReqeust
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateTopicRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 성공적으로 주제를 생성한 경우
+          schema:
+            $ref: '#/definitions/domain.CreateTopicResponse'
+      security:
+      - BearerAuth: []
+      summary: 새로운 주제 생성 ✅
+      tags:
+      - topics
   /users:
     delete:
       consumes:

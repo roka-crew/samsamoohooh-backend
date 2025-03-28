@@ -20,10 +20,23 @@ type ListTopicsRequest struct {
 }
 
 type ListTopicsResponse struct {
+	Topics []TopicResponse `json:"topics"`
+}
+
+type TopicResponse struct {
+	TopicID uint   `json:"topic_id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 type PatchTopicRequest struct {
+	RequestUserID uint   `json:"-"       validate:"required,gte=1"`
+	TopicID       uint   `json:"topicID" validate:"required,gte=1"`
+	Title         string `json:"title"   validate:"min=4,max=46"`
+	Content       string `json:"content" validate:"min=4,max=128"`
 }
 
 type DeleteTopicRequest struct {
+	RequestUserID uint `json:"-"       validate:"required,gte=1"`
+	TopicID       uint `json:"topicID" validate:"required,gte=1"`
 }
