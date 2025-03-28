@@ -2,14 +2,21 @@ definitions:
   domain.CreateGroupRequest:
     properties:
       bookAuthor:
+        maxLength: 255
+        minLength: 1
         type: string
       bookMaxPage:
+        minimum: 1
         type: integer
       bookPublisher:
+        maxLength: 255
         type: string
       bookTitle:
+        maxLength: 255
+        minLength: 1
         type: string
       introduction:
+        maxLength: 255
         type: string
     required:
     - bookAuthor
@@ -39,6 +46,8 @@ definitions:
         maxLength: 14
         type: string
       nickname:
+        maxLength: 12
+        minLength: 2
         type: string
     required:
     - nickname
@@ -75,6 +84,8 @@ definitions:
         items:
           type: integer
         type: array
+    required:
+    - groupIDs
     type: object
   domain.LeaveGroupRequest:
     properties:
@@ -82,6 +93,8 @@ definitions:
         items:
           type: integer
         type: array
+    required:
+    - groupIDs
     type: object
   domain.ListGroupsResponse:
     properties:
@@ -105,26 +118,40 @@ definitions:
   domain.PatchGroupRequest:
     properties:
       bookAuthor:
+        maxLength: 255
+        minLength: 1
         type: string
       bookCurrentPage:
+        minimum: 1
         type: integer
       bookMaxPage:
+        minimum: 1
         type: integer
       bookPublisher:
+        maxLength: 255
         type: string
       bookTitle:
+        maxLength: 255
+        minLength: 1
         type: string
       grouopID:
+        minimum: 1
         type: integer
       introduction:
+        maxLength: 255
         type: string
+    required:
+    - grouopID
     type: object
   domain.PatchUserRequest:
     properties:
       biography:
+        maxLength: 14
         type: string
       nickname:
         description: updates
+        maxLength: 12
+        minLength: 2
         type: string
     type: object
   domain.ValidateResponse:
@@ -329,7 +356,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 새로운 사용자 정보
+      - description: 생성할 사용자 정보
         in: body
         name: CreateUserRequest
         required: true

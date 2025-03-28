@@ -265,7 +265,7 @@
                 "summary": "새로운 사용자 생성 ✅",
                 "parameters": [
                     {
-                        "description": "새로운 사용자 정보",
+                        "description": "생성할 사용자 정보",
                         "name": "CreateUserRequest",
                         "in": "body",
                         "required": true,
@@ -350,19 +350,26 @@
             ],
             "properties": {
                 "bookAuthor": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 },
                 "bookMaxPage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "bookPublisher": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "bookTitle": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 },
                 "introduction": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 }
             }
         },
@@ -403,7 +410,9 @@
                     "maxLength": 14
                 },
                 "nickname": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 12,
+                    "minLength": 2
                 }
             }
         },
@@ -449,6 +458,9 @@
         },
         "domain.JoinGroupRequest": {
             "type": "object",
+            "required": [
+                "groupIDs"
+            ],
             "properties": {
                 "groupIDs": {
                     "type": "array",
@@ -460,6 +472,9 @@
         },
         "domain.LeaveGroupRequest": {
             "type": "object",
+            "required": [
+                "groupIDs"
+            ],
             "properties": {
                 "groupIDs": {
                     "type": "array",
@@ -501,27 +516,39 @@
         },
         "domain.PatchGroupRequest": {
             "type": "object",
+            "required": [
+                "grouopID"
+            ],
             "properties": {
                 "bookAuthor": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 },
                 "bookCurrentPage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "bookMaxPage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "bookPublisher": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "bookTitle": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 },
                 "grouopID": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "introduction": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 }
             }
         },
@@ -529,11 +556,14 @@
             "type": "object",
             "properties": {
                 "biography": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 14
                 },
                 "nickname": {
                     "description": "updates",
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 12,
+                    "minLength": 2
                 }
             }
         },

@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/swagger"
 
-	_ "github.com/roka-crew/samsamoohooh-backend/docs"
+	_ "github.com/roka-crew/samsamoohooh-backend/api"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/config"
 	"go.uber.org/fx"
