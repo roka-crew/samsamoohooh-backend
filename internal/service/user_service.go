@@ -46,7 +46,7 @@ func (s UserService) CreateUser(ctx context.Context, request domain.CreateUserRe
 func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequest) error {
 	// (1) 수정하고자 하는 사용자가 존재하는지 확인
 	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
-		IDs: []uint{request.RequesterID},
+		IDs: []uint{request.RequestUserID},
 	})
 	if err != nil {
 		return err
@@ -57,7 +57,7 @@ func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequ
 
 	// (2) 사용자 수정
 	err = s.userStore.PatchUser(ctx, domain.PatchUserParams{
-		ID:        request.RequesterID,
+		ID:        request.RequestUserID,
 		Nickname:  request.Nickname,
 		Biography: request.Biography,
 	})
@@ -70,7 +70,7 @@ func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequ
 
 func (s UserService) DeleteUser(ctx context.Context, request domain.DeleteUserRequest) error {
 	err := s.userStore.DeleteUser(ctx, domain.DeleteUserParams{
-		ID: request.RequesterID,
+		ID: request.RequestUserID,
 	})
 	if err != nil {
 		return err

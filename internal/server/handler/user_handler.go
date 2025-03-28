@@ -85,7 +85,7 @@ func (h UserHandler) PatchUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	request.RequesterID, err = ctxutil.GetUserID(c)
+	request.RequestUserID, err = ctxutil.GetUserID(c)
 	if err != nil {
 		return err
 	}
@@ -117,7 +117,7 @@ func (h UserHandler) DeleteUser(c *fiber.Ctx) error {
 		err     error
 	)
 
-	request.RequesterID, err = ctxutil.GetUserID(c)
+	request.RequestUserID, err = ctxutil.GetUserID(c)
 	if err != nil {
 		return err
 	}

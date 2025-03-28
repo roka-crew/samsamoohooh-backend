@@ -27,7 +27,7 @@ func NewTopicService(
 
 func (s TopicService) CreateTopic(ctx context.Context, request domain.CreateTopicRequest) (domain.CreateTopicResponse, error) {
 	hasGroup, err := s.userStore.HasGroups(ctx, domain.HasGroupsParams{
-		UserID:   request.RequesterID,
+		UserID:   request.RequestUserID,
 		GroupIDs: []uint{request.GroupID},
 	})
 	if err != nil {

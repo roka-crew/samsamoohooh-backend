@@ -23,7 +23,7 @@ func (m User) ToCreateUserResponse() CreateUserResponse {
 
 type PatchUserRequest struct {
 	// conditions
-	RequesterID uint `json:"-" validate:"required,gte=1"`
+	RequestUserID uint `json:"-" validate:"required,gte=1"`
 
 	// updates
 	Nickname  *string `json:"nickname"  validate:"min=2,max=12"`
@@ -32,5 +32,5 @@ type PatchUserRequest struct {
 
 type DeleteUserRequest struct {
 	// conditions
-	RequesterID uint `json:"-" validate:"required,gte=1"`
+	RequestUserID uint `json:"-" validate:"required,gte=1"`
 }

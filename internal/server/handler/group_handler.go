@@ -61,7 +61,7 @@ func (h GroupHandler) CreateGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	request.RequesterID, err = ctxutil.GetUserID(c)
+	request.RequestUserID, err = ctxutil.GetUserID(c)
 	if err != nil {
 		return err
 	}
@@ -135,6 +135,8 @@ func (h GroupHandler) PatchGroup(c *fiber.Ctx) error {
 	if err = c.BodyParser(&request); err != nil {
 		return err
 	}
+
+	// if request.RequestUserID
 
 	if err = validator.Validate(&request); err != nil {
 		return err

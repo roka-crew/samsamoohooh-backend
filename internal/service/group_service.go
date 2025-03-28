@@ -40,7 +40,7 @@ func (s GroupService) CreateGroup(ctx context.Context, request domain.CreateGrou
 	// (2) 새로운 구룹에 사용자 추가하기
 	err = s.groupStore.AppendUser(ctx, domain.AppendUserParams{
 		GroupID: createdGroup.ID,
-		UserIDs: []uint{request.RequesterID},
+		UserIDs: []uint{request.RequestUserID},
 	})
 	if err != nil {
 		return domain.CreateGroupResponse{}, err
@@ -65,7 +65,7 @@ func (s GroupService) ListGroups(ctx context.Context, request domain.ListGroupsR
 func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupRequest) error {
 	// (1) 요청한 사용자가, 변경하고자 하는 구룹에 속해있는지 확인
 	fetchedGrouops, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.RequesterID,
+		UserID: request.RequestUserID,
 		Limit:  1,
 	})
 	if err != nil {

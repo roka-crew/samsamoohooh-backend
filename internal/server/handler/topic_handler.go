@@ -66,3 +66,18 @@ func (h TopicHandler) DeleteTopic(c *fiber.Ctx) error {
 	)
 	return nil
 }
+
+// func (h TopicHandler) ListTopics(c *fiber.Ctx) error {
+// 	var ()
+// 	return nil
+// }
+
+// func (h TopicHandler) PatchTopic(c *fiber.Ctx) error {
+// 	var ()
+// 	return nil
+// }
+
+// func (h TopicHandler) DeleteTopic(c *fiber.Ctx) error {
+// 	var ()
+// 	return nil
+// }

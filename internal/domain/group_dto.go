@@ -1,7 +1,7 @@
 package domain
 
 type CreateGroupRequest struct {
-	RequesterID   uint    `json:"-"             validate:"required,gte=1"`
+	RequestUserID uint    `json:"-"             validate:"required,gte=1"`
 	BookTitle     string  `json:"bookTitle"     validate:"required,min=1,max=255"`
 	BookAuthor    string  `json:"bookAuthor"    validate:"required,min=1,max=255"`
 	BookPublisher *string `json:"bookPublisher" validate:"max=255"`
@@ -39,7 +39,7 @@ type GroupResponse struct {
 }
 
 type PatchGroupRequest struct {
-	RequesterID     uint    `json:"-"               validate:"required,gte=1"`
+	RequestUserID   uint    `json:"-"               validate:"required,gte=1"`
 	GrouopID        uint    `params:"group-id"      validate:"required,gte=1"`
 	BookTitle       *string `json:"bookTitle"       validate:"min=1,max=255"`
 	BookAuthor      *string `json:"bookAuthor"      validate:"min=1,max=255"`
