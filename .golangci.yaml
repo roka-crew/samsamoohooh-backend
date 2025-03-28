@@ -1,11 +1,26 @@
+version: "2"
 linters:
   enable:
     - tagalign
-
-linters-settings:
-  tagalign:
-    # 정렬 활성화 여부 
-    align: true
-
-    # 태그 정렬 활성화 여부 (알파벳 기준 오름차순) 
-    sort: true
+  settings:
+    tagalign:
+      align: true
+      sort: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

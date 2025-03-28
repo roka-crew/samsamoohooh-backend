@@ -14,9 +14,9 @@ type CreateTopicResponse struct {
 }
 
 type ListTopicsRequest struct {
-	RequestUserID uint `json:"-" validate:"required,gte=1"`
+	RequestUserID uint `json:"-"       validate:"required,gte=1"`
 	GroupID       uint `json:"groupID" validate:"required,gte=1"`
-	Limit         int  `json:"limit"  validate:"required,gte=1,lte=300"`
+	Limit         int  `json:"limit"   validate:"required,gte=1,lte=300"`
 }
 
 type ListTopicsResponse struct {

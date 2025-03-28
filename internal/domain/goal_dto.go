@@ -3,10 +3,10 @@ package domain
 import "time"
 
 type CreateGoalRequest struct {
-	RequestUserID uint      `json:"-"`
-	GroupID       uint      `json:"groupID"`
-	Deadline      time.Time `json:"deadline"`
-	BookPage      int       `json:"bookPage"`
+	RequestUserID uint      `json:"-"        validate:"required,gte=1"`
+	GroupID       uint      `json:"groupID"  validate:"required,gte=1"`
+	Deadline      time.Time `json:"deadline" validate:"required"`
+	BookPage      int       `json:"bookPage" validate:"required,gte=1"`
 }
 
 type CreateGoalResponse struct {
@@ -16,9 +16,9 @@ type CreateGoalResponse struct {
 }
 
 type ListGoalsRequest struct {
-	RequestUserID uint `json:"-"`
-	GoalIDs       []uint
-	Limit         int
+	RequestUserID uint   `json:"-"`
+	GoalIDs       []uint `json:"goalIDs" validate:"dive,gte=1"`
+	Limit         int    `query:"limit"  validate:"gte=1,lte=300"`
 }
 
 type ListGoalsResponse struct {
@@ -33,8 +33,8 @@ type GoalResponse struct {
 
 type PatchGoalRequest struct {
 	RequestUserID uint       `json:"-"`
-	GoalID        uint       `json:"goalID"`
-	BookPage      *int       `json:"bookPage"`
+	GoalID        uint       `json:"goalID"   validate:"required,gte=1"`
+	BookPage      *int       `json:"bookPage" validate:"gte=1"`
 	Deadline      *time.Time `json:"deadline"`
 }
 type DeleteGoalRequest struct {
