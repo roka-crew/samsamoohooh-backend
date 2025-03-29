@@ -1,0 +1,31 @@
+# 작업 디렉토리 설정 (프로젝트 루트)
+root = "."
+tmp_dir = "tmp"
+
+[build]
+# 빌드 명령어: cmd/samsamoohooh/samsamoohooh.go를 컴파일하여 tmp/main으로 출력
+cmd = "go build -o ./tmp/main ./cmd/samsamoohooh/samsamoohooh.go"
+# 실행할 바이너리 파일 경로
+bin = "./tmp/main"
+# 실행 시 추가 인자 (필요 시 설정, 기본적으로 비움)
+args_bin = []
+# 감시할 파일 확장자
+include_ext = ["go"]
+# 감시에서 제외할 디렉토리
+exclude_dir = ["tmp", "vendor", "configs"]
+# 감시에서 제외할 정규 표현식 (예: 테스트 파일)
+exclude_regex = ["_test\\.go"]
+# 빌드 지연 시간 (ms 단위, 필요 시 조정)
+delay = 100
+# 빌드 오류 발생 시 이전 바이너리 실행 중지
+stop_on_error = true
+
+[log]
+# 로그에 시간 표시 여부
+time = false
+# 주요 로그만 표시 (선택 사항)
+main_only = false
+
+[misc]
+# 종료 시 tmp 디렉토리 정리 여부
+clean_on_exit = true
