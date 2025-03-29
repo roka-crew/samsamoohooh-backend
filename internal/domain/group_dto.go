@@ -51,10 +51,10 @@ type PatchGroupRequest struct {
 
 type JoinGroupRequest struct {
 	RequesterID uint   `json:"-"        validate:"required,gte=1"`
-	GroupIDs    []uint `json:"groupIDs" validate:"required,dive,gte=1"`
+	GroupIDs    []uint `json:"groupIDs" validate:"required,min=1,dive,gte=1"`
 }
 
 type LeaveGroupRequest struct {
 	RequesterID uint   `json:"-"        validate:"required,gte=1"`
-	GrouopIDs   []uint `json:"groupIDs" validate:"required,dive,gte=1"`
+	GrouopIDs   []uint `json:"groupIDs" validate:"required,min=1,dive,gte=1"`
 }

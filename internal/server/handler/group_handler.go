@@ -170,15 +170,15 @@ func (h GroupHandler) JoinGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err = validator.Validate(&request); err != nil {
-		return err
-	}
-
 	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 
-	err = h.groupService.JoinGroup(c.Context(), domain.JoinGroupRequest{})
+	if err = validator.Validate(&request); err != nil {
+		return err
+	}
+
+	err = h.groupService.JoinGroup(c.Context(), request)
 	if err != nil {
 		return err
 	}

@@ -54,10 +54,14 @@ func (s UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams)
 		db = db.Preload("Goals")
 	}
 
+	if params.WithTopics {
+		db = db.Preload("Topics")
+	}
+
 	if params.WithGroups {
 		db = db.Preload("Groups", func(db *gorm.DB) *gorm.DB {
 			if len(params.WithGroupsIDs) > 0 {
-				db = db.Where("id IN ?", params.WithGroupsIDs)
+				db = db.Where("groups.id IN ?", params.WithGroupsIDs)
 			}
 
 			if params.WithGroupsLimit > 0 {
@@ -66,10 +70,6 @@ func (s UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams)
 
 			return db
 		})
-	}
-
-	if params.WithTopics {
-		db = db.Preload("Topics")
 	}
 
 	if params.Limit > 0 {
@@ -137,8 +137,7 @@ func (s UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsP
 	}
 
 	err := s.db.WithContext(ctx).
-		Model(&domain.User{}).
-		Where("id = ?", params.UserID).
+		Model(&domain.User{ID: params.UserID}).
 		Association("Groups").
 		Append(wantAppendGroups)
 	if err != nil {

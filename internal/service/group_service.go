@@ -72,9 +72,6 @@ func (s GroupService) ListGroups(ctx context.Context, request domain.ListGroupsR
 	if foundUsers.IsEmpty() {
 		return domain.ListGroupsResponse{}, domain.ErrUserNotFound
 	}
-	if foundUsers.First().Groups.IsEmpty() {
-		return domain.ListGroupsResponse{}, domain.ErrGroupNotFound
-	}
 
 	groupsResponse := make([]domain.GroupResponse, 0, len(foundUsers.First().Groups))
 	for _, group := range foundUsers.First().Groups {
@@ -131,24 +128,32 @@ func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupR
 }
 
 func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupRequest) error {
-	// // (1) 요청한 사용자가 이미 참가한 구룹이 있는지 확인
-	// fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-	// 	UserID: request.RequesterID,
-	// })
-	// if err != nil {
-	// 	return err
-	// }
-	// if !fetchedGroups.IsEmpty() {
-	// 	return domain.ErrUserAlreadyInGroup
-	// }
+	// (1) 요청한 사용자가 참가하고자 하는 구룹에, 이미 참가했는지 확인
+	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
+		WithGroups:      true,
+		WithGroupsLimit: 1,
+		WithGroupsIDs:   request.GroupIDs,
 
-	// err = s.userStore.AppendGroups(ctx, domain.AppendGroupsParams{
-	// 	UserID:   request.RequesterID,
-	// 	GroupIDs: request.GroupIDs,
-	// })
-	// if err != nil {
-	// 	return err
-	// }
+		IDs:   []uint{request.RequesterID},
+		Limit: 1,
+	})
+	if err != nil {
+		return err
+	}
+	if foundUsers.IsEmpty() {
+		return domain.ErrUserNotFound
+	}
+	if !foundUsers.First().Groups.IsEmpty() {
+		return domain.ErrUserAlreadyInGroup
+	}
+
+	err = s.userStore.AppendGroups(ctx, domain.AppendGroupsParams{
+		UserID:   request.RequesterID,
+		GroupIDs: request.GroupIDs,
+	})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
