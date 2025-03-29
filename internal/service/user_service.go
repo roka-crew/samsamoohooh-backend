@@ -2,9 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/store"
+	"github.com/samber/lo"
+	"gorm.io/gorm"
 )
 
 type UserService struct {
@@ -37,10 +40,18 @@ func (s UserService) CreateUser(ctx context.Context, request domain.CreateUserRe
 		Biography: request.Biography,
 	})
 	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return domain.CreateUserResponse{}, domain.ErrUserAlreadyExists
+		}
+
 		return domain.CreateUserResponse{}, err
 	}
 
-	return createdUser.ToCreateUserResponse(), nil
+	return domain.CreateUserResponse{
+		UserID:    createdUser.ID,
+		Nickname:  createdUser.Nickname,
+		Biography: lo.FromPtr(createdUser.Biography),
+	}, nil
 }
 
 func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequest) error {
@@ -69,7 +80,20 @@ func (s UserService) PatchUser(ctx context.Context, request domain.PatchUserRequ
 }
 
 func (s UserService) DeleteUser(ctx context.Context, request domain.DeleteUserRequest) error {
-	err := s.userStore.DeleteUser(ctx, domain.DeleteUserParams{
+	// (1) 삭제하려고 하는 사용자가 존재하는지 확인
+	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
+		IDs:   []uint{request.RequestUserID},
+		Limit: 1,
+	})
+	if err != nil {
+		return err
+	}
+	if foundUsers.IsEmpty() {
+		return domain.ErrUserNotFound
+	}
+
+	// (2) 사용자 삭제
+	err = s.userStore.DeleteUser(ctx, domain.DeleteUserParams{
 		ID: request.RequestUserID,
 	})
 	if err != nil {

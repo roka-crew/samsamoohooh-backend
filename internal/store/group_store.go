@@ -7,6 +7,7 @@ import (
 	"github.com/roka-crew/samsamoohooh-backend/internal/postgres"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
 	"github.com/samber/lo"
+	"gorm.io/gorm"
 )
 
 type GroupStore struct {
@@ -62,7 +63,13 @@ func (s GroupStore) ListGroups(ctx context.Context, params domain.ListGroupsPara
 	}
 
 	if params.WithUsers {
-		db = db.Preload("Users")
+		db = db.Preload("Users", func(db *gorm.DB) *gorm.DB {
+			if len(params.WithUsersIDs) > 0 {
+				db = db.Where("id IN ?", params.WithUsersIDs)
+			}
+
+			return db
+		})
 	}
 
 	if params.OrderBy != "" {
@@ -108,7 +115,7 @@ func (s GroupStore) PatchGroup(ctx context.Context, params domain.PatchGroupPara
 		updates["book_current_page"] = lo.FromPtr(params.BookCurrentPage)
 	}
 
-	if err := s.db.WithContext(ctx).Updates(updates).Error; err != nil {
+	if err := s.db.WithContext(ctx).Model(&domain.Group{ID: params.ID}).Updates(updates).Error; err != nil {
 		return apperr.NewInternalError(err)
 	}
 

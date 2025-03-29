@@ -42,6 +42,7 @@ func NewUserHandler(
 //	@Param		CreateUserRequest	body		domain.CreateUserRequest	true	"생성할 사용자 정보"
 //	@Success	201					{object}	domain.CreateUserResponse	"성공적으로 사용자를 생성한 경우"
 //	@Router		/users [post]
+//	@Security	BearerAuth
 func (h UserHandler) CreateUser(c *fiber.Ctx) error {
 	var (
 		request  domain.CreateUserRequest
@@ -106,8 +107,6 @@ func (h UserHandler) PatchUser(c *fiber.Ctx) error {
 //
 //	@Tags		users
 //	@Summary	사용자 삭제 ✅
-//	@Accept		json
-//	@Produce	json
 //	@Router		/users [delete]
 //	@Success	204
 //	@Security	BearerAuth

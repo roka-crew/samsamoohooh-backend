@@ -19,20 +19,8 @@ type Group struct {
 	UpdatedAt       time.Time
 	DeletedAt       gorm.DeletedAt `gorm:"index"`
 
-	Users []User `gorm:"many2many:user_group_mappers;"`
-	Goals []Goal
-}
-
-func (g Group) ToCreateGroupResponse() CreateGroupResponse {
-	return CreateGroupResponse{
-		GroupID:         g.ID,
-		Introduction:    lo.FromPtr(g.Introduction),
-		BookTitle:       g.BookTitle,
-		BookAuthor:      g.BookAuthor,
-		BookPublisher:   lo.FromPtr(g.BookPublisher),
-		BookMaxPage:     g.BookMaxPage,
-		BookCurrentPage: g.BookCurrentPage,
-	}
+	Users Users `gorm:"many2many:user_group_mappers;"`
+	Goals Goals
 }
 
 func (g Groups) ToListGroupsResponse() ListGroupsResponse {
@@ -69,7 +57,9 @@ type ListGroupsParams struct {
 	OrderBy string
 
 	// relation
-	WithUsers bool
+	WithUsers    bool
+	WithUsersIDs []uint
+
 	WithGoals bool
 
 	// options

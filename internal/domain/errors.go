@@ -1,21 +1,28 @@
 package domain
 
-import "github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
+import (
+	"net/http"
+
+	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
+)
 
 var (
 	// 사용자 관련 에러
-	ErrUserDuplicate      = apperr.New("ERR_USER_DUPLICATE")        // 중복된 사용자가 존재할 때
-	ErrUserAlreadyExists  = apperr.New("ERR_USER_ALREADY_EXISTS")   // 이미 존재하는 사용자가 존재할 때
-	ErrUserNotFound       = apperr.New("ERR_USER_NOT_FOUND")        // 존재하지 않은 사용자가 존재할 때
-	ErrUserNotInGroup     = apperr.New("ERR_USER_NOT_IN_GROUP")     // 사용자가 해당 그룹에 속해있지 않을 때
-	ErrUserAlreadyInGroup = apperr.New("ERR_USER_ALREADY_IN_GROUP") // 사용자가 이미 해당 그룹에 속해있을 때
+	ErrUserDuplicate      = apperr.New("ERR_USER_DUPLICATE").WithStatus(http.StatusConflict)        // 중복된 사용자가 존재할 때
+	ErrUserAlreadyExists  = apperr.New("ERR_USER_ALREADY_EXISTS").WithStatus(http.StatusConflict)   // 이미 존재하는 사용자가 존재할 때
+	ErrUserNotFound       = apperr.New("ERR_USER_NOT_FOUND").WithStatus(http.StatusNotFound)        // 존재하지 않은 사용자가 존재할 때
+	ErrUserNotInGroup     = apperr.New("ERR_USER_NOT_IN_GROUP").WithStatus(http.StatusForbidden)    // 사용자가 해당 그룹에 속해있지 않을 때
+	ErrUserAlreadyInGroup = apperr.New("ERR_USER_ALREADY_IN_GROUP").WithStatus(http.StatusConflict) // 사용자가 이미 해당 그룹에 속해있을 때
+
+	// 구릅 관련 에러
+	ErrGroupNotFound = apperr.New("ERR_GROUP_NOT_FOUND").WithStatus(http.StatusNotFound) // 구룹이 존재하지 않을 때
 
 	// 인증 관련 에러
-	ErrAuthRequired             = apperr.New("ERR_AUTH_REQUIRED")               // 인증 헤더가 없을 때
-	ErrAuthInvalidFormat        = apperr.New("ERR_AUTH_INVALID_FORMAT")         // 잘못된 인증 형식일 때
-	ErrAuthInvalidToken         = apperr.New("ERR_AUTH_INVALID_TOKEN")          // 유효하지 않은 토큰일 때
-	ErrAuthExpiredToken         = apperr.New("ERR_AUTH_EXPIRED_TOKEN")          // 만료된 토큰일 때
-	ErrAuthInvalidSigningMethod = apperr.New("ERR_AUTH_INVALID_SIGNING_METHOD") // 잘못된 서명 방식일 때
-	ErrAuthInvalidClaims        = apperr.New("ERR_AUTH_INVALID_CLAIMS")         // 토큰 클레임이 잘못되었을 때
-	ErrAuthMalformedToken       = apperr.New("ERR_AUTH_MALFORMED_TOKEN")        // 토큰 형식이 잘못되었을 때
+	ErrAuthRequired             = apperr.New("ERR_AUTH_REQUIRED").WithStatus(http.StatusUnauthorized)               // 인증 헤더가 없을 때
+	ErrAuthInvalidFormat        = apperr.New("ERR_AUTH_INVALID_FORMAT").WithStatus(http.StatusBadRequest)           // 잘못된 인증 형식일 때
+	ErrAuthInvalidToken         = apperr.New("ERR_AUTH_INVALID_TOKEN").WithStatus(http.StatusUnauthorized)          // 유효하지 않은 토큰일 때
+	ErrAuthExpiredToken         = apperr.New("ERR_AUTH_EXPIRED_TOKEN").WithStatus(http.StatusUnauthorized)          // 만료된 토큰일 때
+	ErrAuthInvalidSigningMethod = apperr.New("ERR_AUTH_INVALID_SIGNING_METHOD").WithStatus(http.StatusUnauthorized) // 잘못된 서명 방식일 때
+	ErrAuthInvalidClaims        = apperr.New("ERR_AUTH_INVALID_CLAIMS").WithStatus(http.StatusUnauthorized)         // 토큰 클레임이 잘못되었을 때
+	ErrAuthMalformedToken       = apperr.New("ERR_AUTH_MALFORMED_TOKEN").WithStatus(http.StatusBadRequest)          // 토큰 형식이 잘못되었을 때
 )

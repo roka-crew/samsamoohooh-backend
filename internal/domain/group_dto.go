@@ -4,9 +4,9 @@ type CreateGroupRequest struct {
 	RequestUserID uint    `json:"-"             validate:"required,gte=1"`
 	BookTitle     string  `json:"bookTitle"     validate:"required,min=1,max=255"`
 	BookAuthor    string  `json:"bookAuthor"    validate:"required,min=1,max=255"`
-	BookPublisher *string `json:"bookPublisher" validate:"max=255"`
+	BookPublisher *string `json:"bookPublisher" validate:"omitempty,max=255"`
 	BookMaxPage   int     `json:"bookMaxPage"   validate:"required,gte=1"`
-	Introduction  *string `json:"introduction"  validate:"max=255"`
+	Introduction  *string `json:"introduction"  validate:"omitempty,max=255"`
 }
 
 type CreateGroupResponse struct {
@@ -40,13 +40,13 @@ type GroupResponse struct {
 
 type PatchGroupRequest struct {
 	RequestUserID   uint    `json:"-"               validate:"required,gte=1"`
-	GrouopID        uint    `params:"group-id"      validate:"required,gte=1"`
-	BookTitle       *string `json:"bookTitle"       validate:"min=1,max=255"`
-	BookAuthor      *string `json:"bookAuthor"      validate:"min=1,max=255"`
-	BookPublisher   *string `json:"bookPublisher"   validate:"max=255"`
-	BookMaxPage     *int    `json:"bookMaxPage"     validate:"gte=1"`
-	BookCurrentPage *int    `json:"bookCurrentPage" validate:"gte=1"`
-	Introduction    *string `json:"introduction"    validate:"max=255"`
+	GrouopID        uint    `params:"groupID"      validate:"required,gte=1"`
+	BookTitle       *string `json:"bookTitle"       validate:"omitempty,min=1,max=255"`
+	BookAuthor      *string `json:"bookAuthor"      validate:"omitempty,min=1,max=255"`
+	BookPublisher   *string `json:"bookPublisher"   validate:"omitempty,max=255"`
+	BookMaxPage     *int    `json:"bookMaxPage"     validate:"omitempty,gte=1"`
+	BookCurrentPage *int    `json:"bookCurrentPage" validate:"omitempty,gte=1"`
+	Introduction    *string `json:"introduction"    validate:"omitempty,max=255"`
 }
 
 type JoinGroupRequest struct {

@@ -5,7 +5,6 @@ import (
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server/ctxutil"
-	"github.com/roka-crew/samsamoohooh-backend/internal/server/middleware"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server/validator"
 	"github.com/roka-crew/samsamoohooh-backend/internal/service"
 )
@@ -16,18 +15,17 @@ type GroupHandler struct {
 
 func NewGroupHandler(
 	server *server.Server,
-	authMiddleware *middleware.AuthMiddleware,
 	groupService *service.GroupService,
 ) *GroupHandler {
 	handler := &GroupHandler{
 		groupService: groupService,
 	}
 
-	groups := server.Group("/groups", authMiddleware.Authenticate)
+	groups := server.Group("/groups", server.AuthMiddleware.Authenticate)
 	{
 		groups.Post("/", handler.CreateGroup)
 		groups.Get("/", handler.ListGroups)
-		groups.Patch("/:group-id", handler.PatchGroup)
+		groups.Patch("/:groupID", handler.PatchGroup)
 
 		groups.Post("/join", handler.JoinGroup)
 		groups.Post("/leave", handler.LeaveGroup)
@@ -57,12 +55,12 @@ func (h GroupHandler) CreateGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err = validator.Validate(request); err != nil {
+	request.RequestUserID, err = ctxutil.GetUserID(c)
+	if err != nil {
 		return err
 	}
 
-	request.RequestUserID, err = ctxutil.GetUserID(c)
-	if err != nil {
+	if err = validator.Validate(request); err != nil {
 		return err
 	}
 
@@ -95,11 +93,11 @@ func (h GroupHandler) ListGroups(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err = validator.Validate(request); err != nil {
+	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 
-	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
+	if err = validator.Validate(request); err != nil {
 		return err
 	}
 
@@ -136,7 +134,9 @@ func (h GroupHandler) PatchGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	// if request.RequestUserID
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
+		return err
+	}
 
 	if err = validator.Validate(&request); err != nil {
 		return err

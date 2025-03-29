@@ -14,9 +14,9 @@ type User struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	Groups []Group `gorm:"many2many:user_group_mappers;"`
-	Goals  []Goal
-	Topics []Topic
+	Groups Groups `gorm:"many2many:user_group_mappers;"`
+	Goals  Goals
+	Topics Topics
 }
 
 type CreateUserParams = User
@@ -32,7 +32,10 @@ type ListUsersParams struct {
 	OrderBy string
 
 	// relation
-	WithGroups bool
+	WithGroups      bool
+	WithGroupsLimit int
+	WithGroupsIDs   []uint
+
 	WithGoals  bool
 	WithTopics bool
 

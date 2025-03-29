@@ -26,18 +26,18 @@ func NewTopicService(
 }
 
 func (s TopicService) CreateTopic(ctx context.Context, request domain.CreateTopicRequest) (domain.CreateTopicResponse, error) {
-	hasGroup, err := s.userStore.HasGroups(ctx, domain.HasGroupsParams{
-		UserID:   request.RequestUserID,
-		GroupIDs: []uint{request.GroupID},
-	})
-	if err != nil {
-		return domain.CreateTopicResponse{}, err
-	}
-	if !hasGroup {
-		return domain.CreateTopicResponse{}, domain.ErrUserNotInGroup
-	}
+	// hasGroup, err := s.userStore.HasGroups(ctx, domain.HasGroupsParams{
+	// 	UserID:   request.RequestUserID,
+	// 	GroupIDs: []uint{request.GroupID},
+	// })
+	// if err != nil {
+	// 	return domain.CreateTopicResponse{}, err
+	// }
+	// if !hasGroup {
+	// 	return domain.CreateTopicResponse{}, domain.ErrUserNotInGroup
+	// }
 
-	return domain.CreateTopicResponse{}, nil
+	// return domain.CreateTopicResponse{}, nil
 	// (1) 새로운 토픽 생성
 	// createdTopic, err := s.topicStore.CreateTopic(ctx, domain.CreateTopicParams{
 
@@ -47,4 +47,5 @@ func (s TopicService) CreateTopic(ctx context.Context, request domain.CreateTopi
 	// }
 
 	// return createdTopic.ToCreateTopicResponse(), nil
+	return domain.CreateTopicResponse{}, nil
 }

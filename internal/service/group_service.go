@@ -37,7 +37,7 @@ func (s GroupService) CreateGroup(ctx context.Context, request domain.CreateGrou
 		return domain.CreateGroupResponse{}, err
 	}
 
-	// (2) 새로운 구룹에 사용자 추가하기
+	// (2) 새로운 구룹에 만든 사용자 추가
 	err = s.groupStore.AppendUser(ctx, domain.AppendUserParams{
 		GroupID: createdGroup.ID,
 		UserIDs: []uint{request.RequestUserID},
@@ -46,32 +46,70 @@ func (s GroupService) CreateGroup(ctx context.Context, request domain.CreateGrou
 		return domain.CreateGroupResponse{}, err
 	}
 
-	return createdGroup.ToCreateGroupResponse(), nil
+	return domain.CreateGroupResponse{
+		GroupID:         createdGroup.ID,
+		Introduction:    lo.FromPtr(createdGroup.Introduction),
+		BookTitle:       createdGroup.BookTitle,
+		BookAuthor:      createdGroup.BookAuthor,
+		BookPublisher:   lo.FromPtr(createdGroup.BookPublisher),
+		BookMaxPage:     createdGroup.BookMaxPage,
+		BookCurrentPage: createdGroup.BookCurrentPage,
+	}, nil
 }
 
 func (s GroupService) ListGroups(ctx context.Context, request domain.ListGroupsRequest) (domain.ListGroupsResponse, error) {
 	// (1) 사용자의 구룹 정보를 조회
-	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.RequesterID,
-		Limit:  request.Limit,
+	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
+		WithGroups:      true,
+		WithGroupsLimit: request.Limit,
+
+		IDs:   []uint{request.RequesterID},
+		Limit: 1,
 	})
 	if err != nil {
 		return domain.ListGroupsResponse{}, err
 	}
+	if foundUsers.IsEmpty() {
+		return domain.ListGroupsResponse{}, domain.ErrUserNotFound
+	}
+	if foundUsers.First().Groups.IsEmpty() {
+		return domain.ListGroupsResponse{}, domain.ErrGroupNotFound
+	}
 
-	return fetchedGroups.ToListGroupsResponse(), nil
+	groupsResponse := make([]domain.GroupResponse, 0, len(foundUsers.First().Groups))
+	for _, group := range foundUsers.First().Groups {
+		groupsResponse = append(groupsResponse, domain.GroupResponse{
+			GroupID:         group.ID,
+			BookTitle:       group.BookTitle,
+			BookAuthor:      group.BookAuthor,
+			BookPublisher:   lo.FromPtr(group.BookPublisher),
+			BookMaxPage:     group.BookMaxPage,
+			BookCurrentPage: group.BookCurrentPage,
+			Introduction:    lo.FromPtr(group.Introduction),
+		})
+	}
+
+	return domain.ListGroupsResponse{
+		Groups: groupsResponse,
+	}, nil
 }
 
 func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupRequest) error {
 	// (1) 요청한 사용자가, 변경하고자 하는 구룹에 속해있는지 확인
-	fetchedGrouops, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.RequestUserID,
-		Limit:  1,
+	foundGroups, err := s.groupStore.ListGroups(ctx, domain.ListGroupsParams{
+		WithUsers:    true,
+		WithUsersIDs: []uint{request.RequestUserID},
+
+		IDs:   []uint{request.GrouopID},
+		Limit: 1,
 	})
 	if err != nil {
 		return err
 	}
-	if fetchedGrouops.IsEmpty() {
+	if foundGroups.IsEmpty() {
+		return domain.ErrGroupNotFound
+	}
+	if foundGroups.First().Users.IsEmpty() {
 		return domain.ErrUserNotInGroup
 	}
 
@@ -93,51 +131,51 @@ func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupR
 }
 
 func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupRequest) error {
-	// (1) 요청한 사용자가 이미 참가한 구룹이 있는지 확인
-	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.RequesterID,
-	})
-	if err != nil {
-		return err
-	}
-	if !fetchedGroups.IsEmpty() {
-		return domain.ErrUserAlreadyInGroup
-	}
+	// // (1) 요청한 사용자가 이미 참가한 구룹이 있는지 확인
+	// fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
+	// 	UserID: request.RequesterID,
+	// })
+	// if err != nil {
+	// 	return err
+	// }
+	// if !fetchedGroups.IsEmpty() {
+	// 	return domain.ErrUserAlreadyInGroup
+	// }
 
-	err = s.userStore.AppendGroups(ctx, domain.AppendGroupsParams{
-		UserID:   request.RequesterID,
-		GroupIDs: request.GroupIDs,
-	})
-	if err != nil {
-		return err
-	}
+	// err = s.userStore.AppendGroups(ctx, domain.AppendGroupsParams{
+	// 	UserID:   request.RequesterID,
+	// 	GroupIDs: request.GroupIDs,
+	// })
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
 
 func (s GroupService) LeaveGroup(ctx context.Context, request domain.LeaveGroupRequest) error {
 	// (1) 요청한 사용자의 탈퇴 구룹 리스트에 속해 있는지 확인
-	fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-		UserID: request.RequesterID,
-	})
-	if err != nil {
-		return err
-	}
-	if fetchedGroups.IsEmpty() {
-		return domain.ErrUserNotInGroup
-	}
-	if !lo.Some(request.GrouopIDs, fetchedGroups.IDs()) {
-		return domain.ErrUserNotInGroup
-	}
+	// fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
+	// 	UserID: request.RequesterID,
+	// })
+	// if err != nil {
+	// 	return err
+	// }
+	// if fetchedGroups.IsEmpty() {
+	// 	return domain.ErrUserNotInGroup
+	// }
+	// if !lo.Some(request.GrouopIDs, fetchedGroups.IDs()) {
+	// 	return domain.ErrUserNotInGroup
+	// }
 
 	// (2) 사용자 구룹에서 나가기
-	err = s.userStore.RemoveGroups(ctx, domain.RemoveGroupsParams{
-		UserID:   request.RequesterID,
-		GroupIDs: request.GrouopIDs,
-	})
-	if err != nil {
-		return err
-	}
+	// err = s.userStore.RemoveGroups(ctx, domain.RemoveGroupsParams{
+	// 	UserID:   request.RequesterID,
+	// 	GroupIDs: request.GrouopIDs,
+	// })
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

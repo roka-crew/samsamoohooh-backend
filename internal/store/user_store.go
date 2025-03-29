@@ -7,6 +7,7 @@ import (
 	"github.com/roka-crew/samsamoohooh-backend/internal/postgres"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
 	"github.com/samber/lo"
+	"gorm.io/gorm"
 )
 
 type UserStore struct {
@@ -54,7 +55,17 @@ func (s UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams)
 	}
 
 	if params.WithGroups {
-		db = db.Preload("Groups")
+		db = db.Preload("Groups", func(db *gorm.DB) *gorm.DB {
+			if len(params.WithGroupsIDs) > 0 {
+				db = db.Where("id IN ?", params.WithGroupsIDs)
+			}
+
+			if params.WithGroupsLimit > 0 {
+				db = db.Limit(params.WithGroupsLimit)
+			}
+
+			return db
+		})
 	}
 
 	if params.WithTopics {
@@ -88,7 +99,7 @@ func (s UserStore) PatchUser(ctx context.Context, params domain.PatchUserParams)
 		updates["biography"] = lo.FromPtr(params.Biography)
 	}
 
-	if err := s.db.WithContext(ctx).Model(&domain.User{}).Where("id = ?", params.ID).Updates(updates).Error; err != nil {
+	if err := s.db.WithContext(ctx).Model(&domain.User{ID: params.ID}).Updates(updates).Error; err != nil {
 		return apperr.NewInternalError(err)
 	}
 
@@ -155,40 +166,4 @@ func (s UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsP
 	}
 
 	return nil
-}
-
-func (s UserStore) FetchGroups(ctx context.Context, params domain.FetchGroupsParams) (domain.Groups, error) {
-	db := s.db.WithContext(ctx)
-
-	if params.Limit > 0 {
-		db = db.Limit(params.Limit)
-	}
-
-	var groups domain.Groups
-	err := db.WithContext(ctx).
-		Model(&domain.User{ID: params.UserID}).
-		Association("Groups").
-		Find(&groups)
-	if err != nil {
-		return domain.Groups{}, apperr.NewInternalError(err)
-	}
-
-	return groups, nil
-}
-
-func (s UserStore) HasGroups(ctx context.Context, params domain.HasGroupsParams) (bool, error) {
-	var exists bool
-	err := s.db.WithContext(ctx).
-		Raw(`
-			SELECT EXISTS (
-				SELECT 1	
-				FROM user_group_mappers
-				WHERE user_id = ? AND group_ID IN ?
-			)`, params.UserID, params.GroupIDs).
-		Scan(&exists).Error
-	if err != nil {
-		return false, apperr.NewInternalError(err)
-	}
-
-	return exists, nil
 }
