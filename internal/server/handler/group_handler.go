@@ -170,7 +170,7 @@ func (h GroupHandler) JoinGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 
@@ -206,11 +206,11 @@ func (h GroupHandler) LeaveGroup(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err = validator.Validate(&request); err != nil {
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 
-	if request.RequesterID, err = ctxutil.GetUserID(c); err != nil {
+	if err = validator.Validate(&request); err != nil {
 		return err
 	}
 

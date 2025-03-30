@@ -156,8 +156,7 @@ func (s UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsP
 	}
 
 	err := s.db.WithContext(ctx).
-		Model(&domain.User{}).
-		Where("id = ?", params.UserID).
+		Model(&domain.User{ID: params.UserID}).
 		Association("Groups").
 		Delete(wantRemoveGroups)
 	if err != nil {

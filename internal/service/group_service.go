@@ -134,7 +134,7 @@ func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupReq
 		WithGroupsLimit: 1,
 		WithGroupsIDs:   request.GroupIDs,
 
-		IDs:   []uint{request.RequesterID},
+		IDs:   []uint{request.RequestUserID},
 		Limit: 1,
 	})
 	if err != nil {
@@ -148,7 +148,7 @@ func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupReq
 	}
 
 	err = s.userStore.AppendGroups(ctx, domain.AppendGroupsParams{
-		UserID:   request.RequesterID,
+		UserID:   request.RequestUserID,
 		GroupIDs: request.GroupIDs,
 	})
 	if err != nil {
@@ -159,28 +159,33 @@ func (s GroupService) JoinGroup(ctx context.Context, request domain.JoinGroupReq
 }
 
 func (s GroupService) LeaveGroup(ctx context.Context, request domain.LeaveGroupRequest) error {
-	// (1) 요청한 사용자의 탈퇴 구룹 리스트에 속해 있는지 확인
-	// fetchedGroups, err := s.userStore.FetchGroups(ctx, domain.FetchGroupsParams{
-	// 	UserID: request.RequesterID,
-	// })
-	// if err != nil {
-	// 	return err
-	// }
-	// if fetchedGroups.IsEmpty() {
-	// 	return domain.ErrUserNotInGroup
-	// }
-	// if !lo.Some(request.GrouopIDs, fetchedGroups.IDs()) {
-	// 	return domain.ErrUserNotInGroup
-	// }
+	// (1) 요청한 사용자가 탈퇴 리스트에 포함되어 있는지 확인
+	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
+		WithGroups:      true,
+		WithGroupsIDs:   request.GroupIDs,
+		WithGroupsLimit: len(request.GroupIDs),
+
+		Limit: 1,
+		IDs:   []uint{request.RequestUserID},
+	})
+	if err != nil {
+		return err
+	}
+	if foundUsers.IsEmpty() {
+		return domain.ErrUserNotFound
+	}
+	if len(request.GroupIDs) != foundUsers.First().Groups.Len() {
+		return domain.ErrUserNotInGroup
+	}
 
 	// (2) 사용자 구룹에서 나가기
-	// err = s.userStore.RemoveGroups(ctx, domain.RemoveGroupsParams{
-	// 	UserID:   request.RequesterID,
-	// 	GroupIDs: request.GrouopIDs,
-	// })
-	// if err != nil {
-	// 	return err
-	// }
+	err = s.userStore.RemoveGroups(ctx, domain.RemoveGroupsParams{
+		UserID:   request.RequestUserID,
+		GroupIDs: request.GroupIDs,
+	})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
