@@ -14,8 +14,12 @@ var (
 	ErrUserNotInGroup     = apperr.New("ERR_USER_NOT_IN_GROUP").WithStatus(http.StatusForbidden)    // 사용자가 해당 그룹에 속해있지 않을 때
 	ErrUserAlreadyInGroup = apperr.New("ERR_USER_ALREADY_IN_GROUP").WithStatus(http.StatusConflict) // 사용자가 이미 해당 그룹에 속해있을 때
 
-	// 구릅 관련 에러
+	// 구룹 관련 에러
 	ErrGroupNotFound = apperr.New("ERR_GROUP_NOT_FOUND").WithStatus(http.StatusNotFound) // 구룹이 존재하지 않을 때
+
+	// 목표 관련 에러
+	ErrGoalAlreadyExists = apperr.New("ERR_GOAL_ALREADY_EXISTS").WithStatus(http.StatusConflict) // 이미 존재하는 목표가 있을 때
+	ErrGoalNotFound      = apperr.New("ERR_GOAL_NOT_FOUND").WithStatus(http.StatusNotFound)      // 목표가 존재하지 않을 때
 
 	// 인증 관련 에러
 	ErrAuthRequired             = apperr.New("ERR_AUTH_REQUIRED").WithStatus(http.StatusUnauthorized)               // 인증 헤더가 없을 때

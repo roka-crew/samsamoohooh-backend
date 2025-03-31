@@ -60,7 +60,8 @@ type ListGroupsParams struct {
 	WithUsers    bool
 	WithUsersIDs []uint
 
-	WithGoals bool
+	WithGoals      bool
+	WithGoalsLimit int
 
 	// options
 	Limit  int

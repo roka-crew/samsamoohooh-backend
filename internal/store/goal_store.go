@@ -45,6 +45,10 @@ func (s GoalStore) ListGoals(ctx context.Context, params domain.ListGoalsParmas)
 		db = db.Where("deadline IN ?", params.Deadlines)
 	}
 
+	if len(params.GtCreatedAt) > 0 {
+		db = db.Where("created_at > ?", params.GtCreatedAt)
+	}
+
 	if params.OrderBy != "" {
 		db = db.Order(params.OrderBy + " " + params.Order.ToString())
 	}

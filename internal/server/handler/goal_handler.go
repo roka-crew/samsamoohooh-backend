@@ -4,15 +4,22 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/server"
+	"github.com/roka-crew/samsamoohooh-backend/internal/server/ctxutil"
+	"github.com/roka-crew/samsamoohooh-backend/internal/server/validator"
+	"github.com/roka-crew/samsamoohooh-backend/internal/service"
 )
 
 type GoalHandler struct {
+	goalService *service.GoalService
 }
 
 func NewGoalHander(
+	goalService *service.GoalService,
 	server *server.Server,
 ) *GoalHandler {
-	handler := &GoalHandler{}
+	handler := &GoalHandler{
+		goalService: goalService,
+	}
 
 	goals := server.Group("/goals", server.AuthMiddleware.Authenticate)
 	{
@@ -36,12 +43,29 @@ func NewGoalHander(
 // @Security BearerAuth
 func (h GoalHandler) CreateGoal(c *fiber.Ctx) error {
 	var (
-		_ domain.CreateGoalRequest
-		_ domain.CreateGoalResponse
-		_ error
+		request  domain.CreateGoalRequest
+		response domain.CreateGoalResponse
+		err      error
 	)
 
-	return nil
+	if err = c.BodyParser(&request); err != nil {
+		return err
+	}
+
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
+		return err
+	}
+
+	if err = validator.Validate(&request); err != nil {
+		return err
+	}
+
+	response, err = h.goalService.CreateGoal(c.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
 // ListGoals godoc
@@ -55,12 +79,33 @@ func (h GoalHandler) CreateGoal(c *fiber.Ctx) error {
 // @Security BearerAuth
 func (h GoalHandler) ListGoals(c *fiber.Ctx) error {
 	var (
-		_ domain.ListGoalsRequest
-		_ domain.ListGoalsResponse
-		_ error
+		request  domain.ListGoalsRequest
+		response domain.ListGoalsResponse
+		err      error
 	)
 
-	return nil
+	if err = c.QueryParser(&request); err != nil {
+		return err
+	}
+
+	if err = c.BodyParser(&request); err != nil {
+		return err
+	}
+
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
+		return err
+	}
+
+	if err = validator.Validate(&request); err != nil {
+		return err
+	}
+
+	response, err = h.goalService.ListGoals(c.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
 // PatchGoal godoc
@@ -74,11 +119,28 @@ func (h GoalHandler) ListGoals(c *fiber.Ctx) error {
 // @Security BearerAuth
 func (h GoalHandler) PatchGoal(c *fiber.Ctx) error {
 	var (
-		_ domain.PatchGoalRequest
-		_ error
+		request domain.PatchGoalRequest
+		err     error
 	)
 
-	return nil
+	if err = c.BodyParser(&request); err != nil {
+		return err
+	}
+
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
+		return err
+	}
+
+	if err = validator.Validate(&request); err != nil {
+		return err
+	}
+
+	err = h.goalService.PatchGoal(c.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
 // DeleteGoal godoc
@@ -92,9 +154,26 @@ func (h GoalHandler) PatchGoal(c *fiber.Ctx) error {
 // @Security BearerAuth
 func (h GoalHandler) DeleteGoal(c *fiber.Ctx) error {
 	var (
-		_ domain.DeleteGoalRequest
-		_ error
+		request domain.DeleteGoalRequest
+		err     error
 	)
 
-	return nil
+	if err = c.BodyParser(&request); err != nil {
+		return err
+	}
+
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
+		return err
+	}
+
+	if err = validator.Validate(&request); err != nil {
+		return err
+	}
+
+	err = h.goalService.DeleteGoal(c.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
 }
