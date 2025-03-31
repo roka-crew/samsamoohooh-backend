@@ -87,15 +87,15 @@
                 "summary": "목표 목록 조회 ✅",
                 "parameters": [
                     {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        },
-                        "collectionFormat": "csv",
-                        "name": "goalIDs",
-                        "in": "query"
+                        "minimum": 1,
+                        "type": "integer",
+                        "name": "groupID",
+                        "in": "query",
+                        "required": true
                     },
                     {
+                        "maximum": 300,
+                        "minimum": 1,
                         "type": "integer",
                         "name": "limit",
                         "in": "query"
@@ -178,7 +178,9 @@
                         "description": "No Content"
                     }
                 }
-            },
+            }
+        },
+        "/goals/{goalID}": {
             "patch": {
                 "security": [
                     {
@@ -196,6 +198,13 @@
                 ],
                 "summary": "목표 정보 수정 ✅",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "수정할 목표 ID",
+                        "name": "goalID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "수정할 목표 정보",
                         "name": "PatchGoalRequest",
@@ -354,7 +363,7 @@
                 }
             }
         },
-        "/groups/{group-id}": {
+        "/groups/{groupID}": {
             "patch": {
                 "security": [
                     {
@@ -375,7 +384,7 @@
                     {
                         "type": "string",
                         "description": "수정할 모임 ID",
-                        "name": "group-id",
+                        "name": "groupID",
                         "in": "path",
                         "required": true
                     },
@@ -417,7 +426,7 @@
                     {
                         "minimum": 1,
                         "type": "integer",
-                        "name": "groupID",
+                        "name": "goalID",
                         "in": "query",
                         "required": true
                     },
@@ -507,7 +516,9 @@
                         "description": "No Content"
                     }
                 }
-            },
+            }
+        },
+        "/topics/{topicID}": {
             "patch": {
                 "security": [
                     {
@@ -525,6 +536,13 @@
                 ],
                 "summary": "주제 정보 수정 ✅",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "수정할 목표 ID",
+                        "name": "goalID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "수정할 주제 정보",
                         "name": "PatchTopicRequest",
@@ -544,6 +562,11 @@
         },
         "/users": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -579,12 +602,6 @@
                     {
                         "BearerAuth": []
                     }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
                 ],
                 "tags": [
                     "users"
@@ -634,28 +651,35 @@
     "definitions": {
         "domain.CreateGoalRequest": {
             "type": "object",
+            "required": [
+                "deadline",
+                "groupID",
+                "page"
+            ],
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
                     "type": "string"
                 },
                 "groupID": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "page": {
+                    "type": "integer",
+                    "minimum": 1
                 }
             }
         },
         "domain.CreateGoalResponse": {
             "type": "object",
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "goalID": {
+                    "type": "integer"
+                },
+                "page": {
                     "type": "integer"
                 }
             }
@@ -722,7 +746,7 @@
             "type": "object",
             "required": [
                 "content",
-                "groupID",
+                "goalID",
                 "title"
             ],
             "properties": {
@@ -731,7 +755,7 @@
                     "maxLength": 128,
                     "minLength": 4
                 },
-                "groupID": {
+                "goalID": {
                     "type": "integer",
                     "minimum": 1
                 },
@@ -751,7 +775,7 @@
                 "title": {
                     "type": "string"
                 },
-                "topic_id": {
+                "topicID": {
                     "type": "integer"
                 }
             }
@@ -810,13 +834,13 @@
         "domain.GoalResponse": {
             "type": "object",
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "goalID": {
+                    "type": "integer"
+                },
+                "page": {
                     "type": "integer"
                 }
             }
@@ -855,6 +879,7 @@
             "properties": {
                 "groupIDs": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                         "type": "integer"
                     }
@@ -869,6 +894,7 @@
             "properties": {
                 "groupIDs": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                         "type": "integer"
                     }
@@ -929,15 +955,20 @@
         },
         "domain.PatchGoalRequest": {
             "type": "object",
+            "required": [
+                "goalID"
+            ],
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
                     "type": "string"
                 },
                 "goalID": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "page": {
+                    "type": "integer",
+                    "minimum": 1
                 }
             }
         },
@@ -1025,7 +1056,7 @@
                 "title": {
                     "type": "string"
                 },
-                "topic_id": {
+                "topicID": {
                     "type": "integer"
                 }
             }

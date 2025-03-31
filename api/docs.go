@@ -98,15 +98,15 @@ const docTemplate = `{
                 "summary": "목표 목록 조회 ✅",
                 "parameters": [
                     {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        },
-                        "collectionFormat": "csv",
-                        "name": "goalIDs",
-                        "in": "query"
+                        "minimum": 1,
+                        "type": "integer",
+                        "name": "groupID",
+                        "in": "query",
+                        "required": true
                     },
                     {
+                        "maximum": 300,
+                        "minimum": 1,
                         "type": "integer",
                         "name": "limit",
                         "in": "query"
@@ -189,7 +189,9 @@ const docTemplate = `{
                         "description": "No Content"
                     }
                 }
-            },
+            }
+        },
+        "/goals/{goalID}": {
             "patch": {
                 "security": [
                     {
@@ -207,6 +209,13 @@ const docTemplate = `{
                 ],
                 "summary": "목표 정보 수정 ✅",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "수정할 목표 ID",
+                        "name": "goalID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "수정할 목표 정보",
                         "name": "PatchGoalRequest",
@@ -365,7 +374,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/groups/{group-id}": {
+        "/groups/{groupID}": {
             "patch": {
                 "security": [
                     {
@@ -386,7 +395,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "수정할 모임 ID",
-                        "name": "group-id",
+                        "name": "groupID",
                         "in": "path",
                         "required": true
                     },
@@ -428,7 +437,7 @@ const docTemplate = `{
                     {
                         "minimum": 1,
                         "type": "integer",
-                        "name": "groupID",
+                        "name": "goalID",
                         "in": "query",
                         "required": true
                     },
@@ -518,7 +527,9 @@ const docTemplate = `{
                         "description": "No Content"
                     }
                 }
-            },
+            }
+        },
+        "/topics/{topicID}": {
             "patch": {
                 "security": [
                     {
@@ -536,6 +547,13 @@ const docTemplate = `{
                 ],
                 "summary": "주제 정보 수정 ✅",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "수정할 목표 ID",
+                        "name": "goalID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "수정할 주제 정보",
                         "name": "PatchTopicRequest",
@@ -555,6 +573,11 @@ const docTemplate = `{
         },
         "/users": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -590,12 +613,6 @@ const docTemplate = `{
                     {
                         "BearerAuth": []
                     }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
                 ],
                 "tags": [
                     "users"
@@ -645,28 +662,35 @@ const docTemplate = `{
     "definitions": {
         "domain.CreateGoalRequest": {
             "type": "object",
+            "required": [
+                "deadline",
+                "groupID",
+                "page"
+            ],
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
                     "type": "string"
                 },
                 "groupID": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "page": {
+                    "type": "integer",
+                    "minimum": 1
                 }
             }
         },
         "domain.CreateGoalResponse": {
             "type": "object",
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "goalID": {
+                    "type": "integer"
+                },
+                "page": {
                     "type": "integer"
                 }
             }
@@ -733,7 +757,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "content",
-                "groupID",
+                "goalID",
                 "title"
             ],
             "properties": {
@@ -742,7 +766,7 @@ const docTemplate = `{
                     "maxLength": 128,
                     "minLength": 4
                 },
-                "groupID": {
+                "goalID": {
                     "type": "integer",
                     "minimum": 1
                 },
@@ -762,7 +786,7 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "topic_id": {
+                "topicID": {
                     "type": "integer"
                 }
             }
@@ -821,13 +845,13 @@ const docTemplate = `{
         "domain.GoalResponse": {
             "type": "object",
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "goalID": {
+                    "type": "integer"
+                },
+                "page": {
                     "type": "integer"
                 }
             }
@@ -866,6 +890,7 @@ const docTemplate = `{
             "properties": {
                 "groupIDs": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                         "type": "integer"
                     }
@@ -880,6 +905,7 @@ const docTemplate = `{
             "properties": {
                 "groupIDs": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                         "type": "integer"
                     }
@@ -940,15 +966,20 @@ const docTemplate = `{
         },
         "domain.PatchGoalRequest": {
             "type": "object",
+            "required": [
+                "goalID"
+            ],
             "properties": {
-                "bookPage": {
-                    "type": "integer"
-                },
                 "deadline": {
                     "type": "string"
                 },
                 "goalID": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "page": {
+                    "type": "integer",
+                    "minimum": 1
                 }
             }
         },
@@ -1036,7 +1067,7 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "topic_id": {
+                "topicID": {
                     "type": "integer"
                 }
             }
