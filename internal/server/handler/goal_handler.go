@@ -25,7 +25,7 @@ func NewGoalHander(
 	{
 		goals.Post("/", handler.CreateGoal)
 		goals.Get("/", handler.ListGoals)
-		goals.Patch("/", handler.PatchGoal)
+		goals.Patch("/:goalID", handler.PatchGoal)
 		goals.Delete("/", handler.DeleteGoal)
 	}
 
@@ -33,14 +33,15 @@ func NewGoalHander(
 }
 
 // CreateGoal godoc
-// @Tags goals
-// @Summary 새로운 목표 생성 ✅
-// @Accept json
-// @Produce json
-// @Param CreateGoalReqeust body domain.CreateGoalRequest true "생성할 목표 정보"
-// @Success 201 {object} domain.CreateGoalResponse "성공적으로 목표를 생성한 경우"
-// @Router /goals [post]
-// @Security BearerAuth
+//
+//	@Tags		goals
+//	@Summary	새로운 목표 생성 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Param		CreateGoalReqeust	body		domain.CreateGoalRequest	true	"생성할 목표 정보"
+//	@Success	201					{object}	domain.CreateGoalResponse	"성공적으로 목표를 생성한 경우"
+//	@Router		/goals [post]
+//	@Security	BearerAuth
 func (h GoalHandler) CreateGoal(c *fiber.Ctx) error {
 	var (
 		request  domain.CreateGoalRequest
@@ -69,14 +70,15 @@ func (h GoalHandler) CreateGoal(c *fiber.Ctx) error {
 }
 
 // ListGoals godoc
-// @Tags goals
-// @Summary 목표 목록 조회 ✅
-// @Accept json
-// @Produce json
-// @Param ListGoalsRequest query domain.ListGoalsRequest true "조회할 목표 정보"
-// @Success 200 {object} domain.ListGoalsResponse "목표 목록 조회 성공"
-// @Router /goals [get]
-// @Security BearerAuth
+//
+//	@Tags		goals
+//	@Summary	목표 목록 조회 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Param		ListGoalsRequest	query		domain.ListGoalsRequest		true	"조회할 목표 정보"
+//	@Success	200					{object}	domain.ListGoalsResponse	"목표 목록 조회 성공"
+//	@Router		/goals [get]
+//	@Security	BearerAuth
 func (h GoalHandler) ListGoals(c *fiber.Ctx) error {
 	var (
 		request  domain.ListGoalsRequest
@@ -109,19 +111,25 @@ func (h GoalHandler) ListGoals(c *fiber.Ctx) error {
 }
 
 // PatchGoal godoc
-// @Tags goals
-// @Summary 목표 정보 수정 ✅
-// @Accept json
-// @Produce json
-// @Param PatchGoalRequest body domain.PatchGoalRequest true "수정할 목표 정보"
-// @Success 204
-// @Router /goals [patch]
-// @Security BearerAuth
+//
+//	@Tags		goals
+//	@Summary	목표 정보 수정 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Param		goalID				path	string					true	"수정할 목표 ID"
+//	@Param		PatchGoalRequest	body	domain.PatchGoalRequest	true	"수정할 목표 정보"
+//	@Success	204
+//	@Router		/goals/{goalID} [patch]
+//	@Security	BearerAuth
 func (h GoalHandler) PatchGoal(c *fiber.Ctx) error {
 	var (
 		request domain.PatchGoalRequest
 		err     error
 	)
+
+	if err = c.ParamsParser(&request); err != nil {
+		return err
+	}
 
 	if err = c.BodyParser(&request); err != nil {
 		return err
@@ -144,14 +152,15 @@ func (h GoalHandler) PatchGoal(c *fiber.Ctx) error {
 }
 
 // DeleteGoal godoc
-// @Tags goals
-// @Summary 목표 삭제 ✅
-// @Accept json
-// @Produce json
-// @Param DeleteGoalRequest body domain.DeleteGoalRequest true "삭제할 목표 정보"
-// @Success 204
-// @Router /goals [delete]
-// @Security BearerAuth
+//
+//	@Tags		goals
+//	@Summary	목표 삭제 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Param		DeleteGoalRequest	body	domain.DeleteGoalRequest	true	"삭제할 목표 정보"
+//	@Success	204
+//	@Router		/goals [delete]
+//	@Security	BearerAuth
 func (h GoalHandler) DeleteGoal(c *fiber.Ctx) error {
 	var (
 		request domain.DeleteGoalRequest

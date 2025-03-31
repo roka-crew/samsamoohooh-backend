@@ -23,3 +23,14 @@ func (g Goals) Last() Goal {
 	}
 	return g[len(g)-1]
 }
+
+const (
+	GoalID        = "id"
+	GoalPage      = "page"
+	GoalDeadline  = "deadline"
+	GoalCreatedAt = "created_at"
+	GoalUpdatedAt = "updated_at"
+	GoalDeletedAt = "deleted_at"
+	GoalUserID    = "user_id"
+	GoalGroupID   = "group_id"
+)

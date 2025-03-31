@@ -45,6 +45,10 @@ func (s TopicStore) ListTopics(ctx context.Context, params domain.ListTopicsPara
 		db = db.Where("content IN ?", params.Contents)
 	}
 
+	if len(params.GoalIDs) > 0 {
+		db = db.Where("goal_id IN ?", params.GoalIDs)
+	}
+
 	if params.OrderBy != "" {
 		db = db.Order(params.OrderBy + " " + params.Order.ToString())
 	}

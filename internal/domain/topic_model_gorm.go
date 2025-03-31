@@ -23,3 +23,15 @@ func (t Topics) Last() Topic {
 	}
 	return t[len(t)-1]
 }
+
+const (
+	TopicID        = "id"
+	TopicTitle     = "title"
+	TopicContent   = "content"
+	TopicCreatedAt = "created_at"
+	TopicUpdatedAt = "updated_at"
+	TopicDeletedAt = "deleted_at"
+
+	TopicGoalID = "goal_id"
+	TopicUserID = "user_id"
+)

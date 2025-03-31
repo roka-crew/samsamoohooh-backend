@@ -33,7 +33,7 @@ type GoalResponse struct {
 
 type PatchGoalRequest struct {
 	RequestUserID uint       `json:"-"`
-	GoalID        uint       `json:"goalID"   validate:"required,gte=1"`
+	GoalID        uint       `params:"goalID"   validate:"required,gte=1"`
 	Page          *int       `json:"page" validate:"omitempty,gte=1"`
 	Deadline      *time.Time `json:"deadline" validate:"omitempty"`
 }

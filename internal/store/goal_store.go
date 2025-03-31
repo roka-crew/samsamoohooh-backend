@@ -49,6 +49,10 @@ func (s GoalStore) ListGoals(ctx context.Context, params domain.ListGoalsParmas)
 		db = db.Where("created_at > ?", params.GtCreatedAt)
 	}
 
+	if len(params.GroupIDs) > 0 {
+		db = db.Where("group_id IN ?", params.GroupIDs)
+	}
+
 	if params.OrderBy != "" {
 		db = db.Order(params.OrderBy + " " + params.Order.ToString())
 	}
@@ -73,11 +77,11 @@ func (s GoalStore) PatchGoal(ctx context.Context, params domain.PatchGoalParams)
 	var updates = make(map[string]any)
 
 	if params.Page != nil {
-		updates["page"] = lo.FromPtr(params.Page)
+		updates[domain.GoalPage] = lo.FromPtr(params.Page)
 	}
 
 	if params.Deadline != nil {
-		updates["deadline"] = lo.FromPtr(params.Deadline)
+		updates[domain.GoalDeadline] = lo.FromPtr(params.Deadline)
 	}
 
 	if err := s.db.Model(domain.Goal{}).Where("id = ?", params.ID).Updates(updates).Error; err != nil {

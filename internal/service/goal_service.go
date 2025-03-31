@@ -99,22 +99,16 @@ func (s *GoalService) ListGoals(ctx context.Context, request domain.ListGoalsReq
 	}
 
 	// (2) 요청한 구룹의 목표 목록 조회
-	foundGroups, err := s.groupStore.ListGroups(ctx, domain.ListGroupsParams{
-		IDs:   []uint{request.GroupID},
-		Limit: 1,
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+		GroupIDs: []uint{request.GroupID},
+		Limit:    request.Limit,
 
-		WithGoals:      true,
-		WithGoalsLimit: request.Limit,
+		Order:   domain.SortOrderDesc,
+		OrderBy: domain.GoalCreatedAt,
 	})
-	if err != nil {
-		return domain.ListGoalsResponse{}, err
-	}
-	if foundGroups.IsEmpty() {
-		return domain.ListGoalsResponse{}, domain.ErrGroupNotFound
-	}
 
-	goalsResponse := make([]domain.GoalResponse, 0, len(foundGroups.First().Goals))
-	for _, foundGoal := range foundGroups.First().Goals {
+	goalsResponse := make([]domain.GoalResponse, 0, len(foundGoals))
+	for _, foundGoal := range foundGoals {
 		goalsResponse = append(goalsResponse, domain.GoalResponse{
 			GoalID:   foundGoal.ID,
 			Page:     foundGoal.Page,

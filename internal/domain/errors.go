@@ -21,6 +21,9 @@ var (
 	ErrGoalAlreadyExists = apperr.New("ERR_GOAL_ALREADY_EXISTS").WithStatus(http.StatusConflict) // 이미 존재하는 목표가 있을 때
 	ErrGoalNotFound      = apperr.New("ERR_GOAL_NOT_FOUND").WithStatus(http.StatusNotFound)      // 목표가 존재하지 않을 때
 
+	// 주제 관련 에러
+	ErrTopicNotFound = apperr.New("ERR_TOPIC_NOT_FOUND").WithStatus(http.StatusNotFound) // 주제가 존재하지 않을 때
+
 	// 인증 관련 에러
 	ErrAuthRequired             = apperr.New("ERR_AUTH_REQUIRED").WithStatus(http.StatusUnauthorized)               // 인증 헤더가 없을 때
 	ErrAuthInvalidFormat        = apperr.New("ERR_AUTH_INVALID_FORMAT").WithStatus(http.StatusBadRequest)           // 잘못된 인증 형식일 때

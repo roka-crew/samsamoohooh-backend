@@ -23,3 +23,12 @@ func (g Users) Last() User {
 	}
 	return g[len(g)-1]
 }
+
+const (
+	UserID        = "id"
+	UserNickname  = "nickname"
+	UserBiography = "biography"
+	UserCreatedAt = "created_at"
+	UserUpdatedAt = "updated_at"
+	UserDeletedAt = "deleted_at"
+)

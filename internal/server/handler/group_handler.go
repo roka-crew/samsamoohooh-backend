@@ -115,10 +115,10 @@ func (h GroupHandler) ListGroups(c *fiber.Ctx) error {
 //	@Summary	모임 정보 수정 ✅
 //	@Accept		json
 //	@Produce	json
-//	@Param		group-id			path	string						true	"수정할 모임 ID"
+//	@Param		groupID				path	string						true	"수정할 모임 ID"
 //	@Param		PatchGroupRequest	body	domain.PatchGroupRequest	true	"수정할 모임 정보"
 //	@Success	204
-//	@Router		/groups/{group-id} [patch]
+//	@Router		/groups/{groupID} [patch]
 //	@Security	BearerAuth
 func (h GroupHandler) PatchGroup(c *fiber.Ctx) error {
 	var (

@@ -33,3 +33,16 @@ func (g Groups) IDs() []uint {
 
 	return ids
 }
+
+const (
+	GroupID              = "id"
+	GroupIntroduction    = "introduction"
+	GroupBookTitle       = "book_title"
+	GroupBookAuthor      = "book_author"
+	GroupBookPublisher   = "book_publisher"
+	GroupBookMaxPage     = "book_max_page"
+	GroupBookCurrentPage = "book_current_page"
+	GroupCreatedAt       = "created_at"
+	GroupUpdatedAt       = "updated_at"
+	GroupDeletedAt       = "deleted_at"
+)

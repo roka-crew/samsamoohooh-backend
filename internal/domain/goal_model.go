@@ -26,6 +26,7 @@ type ListGoalsParmas struct {
 	Pages       []int
 	Deadlines   []time.Time
 	GtCreatedAt []time.Time
+	GroupIDs    []uint
 
 	// order
 	Order   SortOrder

@@ -25,6 +25,7 @@ type ListTopicsParams struct {
 	IDs      []uint
 	Titles   []string
 	Contents []string
+	GoalIDs  []uint
 
 	// order
 	Order   SortOrder

@@ -92,11 +92,11 @@ func (s UserStore) PatchUser(ctx context.Context, params domain.PatchUserParams)
 	var updates = make(map[string]any)
 
 	if params.Nickname != nil {
-		updates["nickname"] = lo.FromPtr(params.Nickname)
+		updates[domain.UserNickname] = lo.FromPtr(params.Nickname)
 	}
 
 	if params.Biography != nil {
-		updates["biography"] = lo.FromPtr(params.Biography)
+		updates[domain.UserBiography] = lo.FromPtr(params.Biography)
 	}
 
 	if err := s.db.WithContext(ctx).Model(&domain.User{ID: params.ID}).Updates(updates).Error; err != nil {
