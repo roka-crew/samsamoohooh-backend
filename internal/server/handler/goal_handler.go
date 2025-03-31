@@ -90,10 +90,6 @@ func (h GoalHandler) ListGoals(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err = c.BodyParser(&request); err != nil {
-		return err
-	}
-
 	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}

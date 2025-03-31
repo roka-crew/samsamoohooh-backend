@@ -6,10 +6,19 @@ import (
 	"gorm.io/gorm"
 )
 
+type GoalStatus string
+
+const (
+	GoalStatusDiscussionPending GoalStatus = "DISCUSSION_PENDING"
+	GoalStatusDiscussionDone    GoalStatus = "DISCUSSION_DONE"
+)
+
 type Goal struct {
-	ID        uint      `gorm:"primarykey"`
-	Page      int       `gorm:"column:page;type:integer"`
-	Deadline  time.Time `gorm:"column:deadline;type:timestamp"`
+	ID       uint       `gorm:"primarykey"`
+	Page     int        `gorm:"column:page;type:integer"`
+	Deadline time.Time  `gorm:"column:deadline;type:timestamp"`
+	Status   GoalStatus `gorm:"column:status;type:varchar(255)"` // ENUM('DISCUSSION_PENDING', 'DISCUSSION_DONE')
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -25,6 +34,7 @@ type ListGoalsParmas struct {
 	IDs         []uint
 	Pages       []int
 	Deadlines   []time.Time
+	Statuses    []GoalStatus
 	GtCreatedAt []time.Time
 	GroupIDs    []uint
 

@@ -25,18 +25,22 @@ func main() {
 			store.NewGoalStore,
 			store.NewTopicStore,
 
-			service.NewAuthService,
 			service.NewUserSerivce,
 			service.NewGroupService,
+			service.NewGoalService,
+			service.NewTopicService,
+			service.NewAuthService,
 
 			token.NewJWTMaker,
-			server.NewServer,
 			middleware.NewAuthMiddleware,
+			server.NewServer,
 		),
 		fx.Invoke(
-			handler.NewAuthHandler,
 			handler.NewUserHandler,
 			handler.NewGroupHandler,
+			handler.NewGoalHander,
+			handler.NewTopicHandler,
+			handler.NewAuthHandler,
 		),
 	).Run()
 }

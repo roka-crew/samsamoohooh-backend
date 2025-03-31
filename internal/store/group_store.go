@@ -85,7 +85,7 @@ func (s GroupStore) ListGroups(ctx context.Context, params domain.ListGroupsPara
 	}
 
 	var groups domain.Groups
-	if err := db.Debug().Find(&groups).Error; err != nil {
+	if err := db.Find(&groups).Error; err != nil {
 		return domain.Groups{}, apperr.NewInternalError(err)
 	}
 

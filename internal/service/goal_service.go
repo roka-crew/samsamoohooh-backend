@@ -54,7 +54,7 @@ func (s *GoalService) CreateGoal(ctx context.Context, request domain.CreateGoalR
 
 	// (2) 진행중인 목표가 존재하는지 확인
 	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
-		IDs:         []uint{request.GroupID},
+		GroupIDs:    []uint{request.GroupID},
 		GtCreatedAt: []time.Time{request.Deadline},
 	})
 	if err != nil {
@@ -66,15 +66,22 @@ func (s *GoalService) CreateGoal(ctx context.Context, request domain.CreateGoalR
 
 	// (3) 새로운 목표 생성
 	createdGoal, err := s.goalStore.CreateGoal(ctx, domain.CreateGoalParams{
-		GroupID:  request.GroupID,
+		UserID:  request.RequestUserID,
+		GroupID: request.GroupID,
+
 		Page:     request.Page,
 		Deadline: request.Deadline,
+		Status:   domain.GoalStatusDiscussionPending,
 	})
+	if err != nil {
+		return domain.CreateGoalResponse{}, err
+	}
 
 	return domain.CreateGoalResponse{
 		GoalID:   createdGoal.ID,
 		Page:     createdGoal.Page,
 		Deadline: createdGoal.Deadline,
+		Status:   createdGoal.Status,
 	}, nil
 }
 
@@ -113,6 +120,7 @@ func (s *GoalService) ListGoals(ctx context.Context, request domain.ListGoalsReq
 			GoalID:   foundGoal.ID,
 			Page:     foundGoal.Page,
 			Deadline: foundGoal.Deadline,
+			Status:   foundGoal.Status,
 		})
 	}
 

@@ -10,9 +10,10 @@ type CreateGoalRequest struct {
 }
 
 type CreateGoalResponse struct {
-	GoalID   uint      `json:"goalID"`
-	Page     int       `json:"page"`
-	Deadline time.Time `json:"deadline"`
+	GoalID   uint       `json:"goalID"`
+	Page     int        `json:"page"`
+	Deadline time.Time  `json:"deadline"`
+	Status   GoalStatus `json:"status"`
 }
 
 type ListGoalsRequest struct {
@@ -26,9 +27,10 @@ type ListGoalsResponse struct {
 }
 
 type GoalResponse struct {
-	GoalID   uint      `json:"goalID"`
-	Page     int       `json:"page"`
-	Deadline time.Time `json:"deadline"`
+	GoalID   uint       `json:"goalID"`
+	Page     int        `json:"page"`
+	Deadline time.Time  `json:"deadline"`
+	Status   GoalStatus `json:"status"`
 }
 
 type PatchGoalRequest struct {
@@ -37,6 +39,7 @@ type PatchGoalRequest struct {
 	Page          *int       `json:"page" validate:"omitempty,gte=1"`
 	Deadline      *time.Time `json:"deadline" validate:"omitempty"`
 }
+
 type DeleteGoalRequest struct {
 	RequestUserID uint `json:"-"`
 	GoalID        uint `json:"goalID"`
