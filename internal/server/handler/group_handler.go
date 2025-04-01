@@ -235,10 +235,27 @@ func (h GroupHandler) LeaveGroup(c *fiber.Ctx) error {
 //	@Security	BearerAuth
 func (h GroupHandler) StartDiscussion(c *fiber.Ctx) error {
 	var (
-		_ domain.StartDiscussionRequest
-		_ domain.StartDiscussionResponse
-		_ error
+		request  domain.StartDiscussionRequest
+		response domain.StartDiscussionResponse
+		err      error
 	)
 
-	return nil
+	if err = c.BodyParser(&request); err != nil {
+		return err
+	}
+
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
+		return err
+	}
+
+	if err = validator.Validate(&request); err != nil {
+		return err
+	}
+
+	response, err = h.groupService.StartDiscussion(c.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(response)
 }

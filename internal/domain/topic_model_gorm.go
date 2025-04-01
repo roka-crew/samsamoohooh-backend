@@ -2,6 +2,15 @@ package domain
 
 type Topics []Topic
 
+func (t Topics) Titles() []string {
+	titles := make([]string, 0, len(t))
+	for _, topic := range t {
+		titles = append(titles, topic.Title)
+	}
+
+	return titles
+}
+
 func (t Topics) Len() int {
 	return len(t)
 }

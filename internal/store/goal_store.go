@@ -7,6 +7,7 @@ import (
 	"github.com/roka-crew/samsamoohooh-backend/internal/postgres"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
 	"github.com/samber/lo"
+	"gorm.io/gorm"
 )
 
 type GoalStore struct {
@@ -67,6 +68,16 @@ func (s GoalStore) ListGoals(ctx context.Context, params domain.ListGoalsParmas)
 
 	if params.Offset > 0 {
 		db = db.Offset(params.Offset)
+	}
+
+	if params.WithTopics {
+		db = db.Preload("Topics", func(db *gorm.DB) *gorm.DB {
+			if params.WithTopicsLimit > 0 {
+				return db.Limit(params.WithTopicsLimit)
+			}
+
+			return db
+		})
 	}
 
 	var goals domain.Goals

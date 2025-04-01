@@ -11,15 +11,18 @@ import (
 type GroupService struct {
 	userStore  *store.UserStore
 	groupStore *store.GroupStore
+	goalStore  *store.GoalStore
 }
 
 func NewGroupService(
 	userStore *store.UserStore,
 	groupStore *store.GroupStore,
+	goalStore *store.GoalStore,
 ) *GroupService {
 	return &GroupService{
 		userStore:  userStore,
 		groupStore: groupStore,
+		goalStore:  goalStore,
 	}
 }
 
@@ -188,4 +191,60 @@ func (s GroupService) LeaveGroup(ctx context.Context, request domain.LeaveGroupR
 	}
 
 	return nil
+}
+
+func (s GroupService) StartDiscussion(ctx context.Context, request domain.StartDiscussionRequest) (domain.StartDiscussionResponse, error) {
+	// (1) goalID가 존재하는지 확인
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+		IDs:   []uint{request.GoalID},
+		Limit: 1,
+
+		WithTopics: true,
+	})
+	if err != nil {
+		return domain.StartDiscussionResponse{}, err
+	}
+	if foundGoals.IsEmpty() {
+		return domain.StartDiscussionResponse{}, domain.ErrGoalNotFound
+	}
+
+	// (1) 요청한 사용자가, 시작하고자 하는 구룹에 속해있는지 확인
+	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
+		WithGroups:      true,
+		WithGroupsLimit: 1,
+		WithGroupsIDs:   []uint{foundGoals.First().GroupID},
+
+		IDs:   []uint{request.RequestUserID},
+		Limit: 1,
+	})
+	if err != nil {
+		return domain.StartDiscussionResponse{}, err
+	}
+	if foundUsers.IsEmpty() {
+		return domain.StartDiscussionResponse{}, domain.ErrUserNotFound
+	}
+	if foundUsers.First().Groups.IsEmpty() {
+		return domain.StartDiscussionResponse{}, domain.ErrUserNotInGroup
+	}
+
+	// (2) 구룹의 토론을 시작
+	foundGroups, err := s.groupStore.ListGroups(ctx, domain.ListGroupsParams{
+		IDs:   []uint{foundGoals.First().GroupID},
+		Limit: 1,
+
+		WithUsers: true,
+	})
+	if err != nil {
+		return domain.StartDiscussionResponse{}, err
+	}
+	if foundGroups.IsEmpty() {
+		return domain.StartDiscussionResponse{}, domain.ErrGroupNotFound
+	}
+
+	foundUsers.First()
+
+	return domain.StartDiscussionResponse{
+		UserNames:   foundGroups.First().Users.Nicknames(),
+		TopicTitles: foundGoals.First().Topics.Titles(),
+	}, nil
 }

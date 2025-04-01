@@ -6,6 +6,15 @@ func (u Users) Len() int {
 	return len(u)
 }
 
+func (u Users) Nicknames() []string {
+	nicknames := make([]string, 0, len(u))
+	for _, user := range u {
+		nicknames = append(nicknames, user.Nickname)
+	}
+
+	return nicknames
+}
+
 func (u Users) IsEmpty() bool {
 	return len(u) == 0
 }

@@ -25,6 +25,7 @@ type Goal struct {
 
 	UserID  uint
 	GroupID uint
+	Topics  Topics
 }
 
 type CreateGoalParams = Goal
@@ -41,6 +42,10 @@ type ListGoalsParmas struct {
 	// order
 	Order   SortOrder
 	OrderBy string
+
+	// relation
+	WithTopics      bool
+	WithTopicsLimit int
 
 	// options
 	Limit  int

@@ -65,6 +65,6 @@ type StartDiscussionRequest struct {
 }
 
 type StartDiscussionResponse struct {
-	UserNames []string `json:"userNames"`
-	Topics    []string `json:"topics"`
+	UserNames   []string `json:"userNames"`
+	TopicTitles []string `json:"topics"`
 }
