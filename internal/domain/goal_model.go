@@ -23,9 +23,9 @@ type Goal struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
+	Topics  Topics
 	UserID  uint
 	GroupID uint
-	Topics  Topics
 }
 
 type CreateGoalParams = Goal

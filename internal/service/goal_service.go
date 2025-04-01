@@ -113,6 +113,9 @@ func (s *GoalService) ListGoals(ctx context.Context, request domain.ListGoalsReq
 		Order:   domain.SortOrderDesc,
 		OrderBy: domain.GoalCreatedAt,
 	})
+	if err != nil {
+		return domain.ListGoalsResponse{}, err
+	}
 
 	goalsResponse := make([]domain.GoalResponse, 0, len(foundGoals))
 	for _, foundGoal := range foundGoals {

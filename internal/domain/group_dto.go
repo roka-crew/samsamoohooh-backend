@@ -40,7 +40,7 @@ type GroupResponse struct {
 
 type PatchGroupRequest struct {
 	RequestUserID   uint    `json:"-"               validate:"required,gte=1"`
-	GrouopID        uint    `params:"groupID"      validate:"required,gte=1"`
+	GrouopID        uint    `params:"groupID"       validate:"required,gte=1"`
 	BookTitle       *string `json:"bookTitle"       validate:"omitempty,min=1,max=255"`
 	BookAuthor      *string `json:"bookAuthor"      validate:"omitempty,min=1,max=255"`
 	BookPublisher   *string `json:"bookPublisher"   validate:"omitempty,max=255"`
@@ -60,8 +60,8 @@ type LeaveGroupRequest struct {
 }
 
 type StartDiscussionRequest struct {
-	RequestUserID uint `json:"-"        validate:"required,gte=1"`
-	GoalID        uint `json:"goalID"  validate:"required,gte=1"`
+	RequestUserID uint `json:"-"      validate:"required,gte=1"`
+	GoalID        uint `json:"goalID" validate:"required,gte=1"`
 }
 
 type StartDiscussionResponse struct {
