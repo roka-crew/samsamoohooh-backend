@@ -58,3 +58,13 @@ type LeaveGroupRequest struct {
 	RequestUserID uint   `json:"-"        validate:"required,gte=1"`
 	GroupIDs      []uint `json:"groupIDs" validate:"required,min=1,dive,gte=1"`
 }
+
+type StartDiscussionRequest struct {
+	RequestUserID uint `json:"-"        validate:"required,gte=1"`
+	GoalID        uint `json:"goalID"  validate:"required,gte=1"`
+}
+
+type StartDiscussionResponse struct {
+	UserNames []string `json:"userNames"`
+	Topics    []string `json:"topics"`
+}

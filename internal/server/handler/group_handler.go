@@ -29,6 +29,7 @@ func NewGroupHandler(
 
 		groups.Post("/join", handler.JoinGroup)
 		groups.Post("/leave", handler.LeaveGroup)
+		groups.Post("/start-discussion", handler.StartDiscussion)
 	}
 
 	return handler
@@ -220,4 +221,24 @@ func (h GroupHandler) LeaveGroup(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
+}
+
+// StartDiscussion godoc
+//
+//	@Tags		groups
+//	@Summary	모임 토론 시작 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Param		StartDiscussionRequest	body	domain.StartDiscussionRequest	true	"토론 시작할 모임 정보"
+//	@Success	204
+//	@Router		/groups/start-discussion [post]
+//	@Security	BearerAuth
+func (h GroupHandler) StartDiscussion(c *fiber.Ctx) error {
+	var (
+		_ domain.StartDiscussionRequest
+		_ domain.StartDiscussionResponse
+		_ error
+	)
+
+	return nil
 }
