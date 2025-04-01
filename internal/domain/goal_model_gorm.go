@@ -25,12 +25,13 @@ func (g Goals) Last() Goal {
 }
 
 const (
-	GoalID        = "id"
-	GoalPage      = "page"
-	GoalDeadline  = "deadline"
-	GoalCreatedAt = "created_at"
-	GoalUpdatedAt = "updated_at"
-	GoalDeletedAt = "deleted_at"
-	GoalUserID    = "user_id"
-	GoalGroupID   = "group_id"
+	ModelGoalID        = "id"
+	ModelGoalPage      = "page"
+	ModelGoalDeadline  = "deadline"
+	ModelGoalStatus    = "status"
+	ModelGoalCreatedAt = "created_at"
+	ModelGoalUpdatedAt = "updated_at"
+	ModelGoalDeletedAt = "deleted_at"
+	ModelGoalUserID    = "user_id"
+	ModelGoalGroupID   = "group_id"
 )

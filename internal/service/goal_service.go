@@ -111,7 +111,7 @@ func (s *GoalService) ListGoals(ctx context.Context, request domain.ListGoalsReq
 		Limit:    request.Limit,
 
 		Order:   domain.SortOrderDesc,
-		OrderBy: domain.GoalCreatedAt,
+		OrderBy: domain.ModelGoalCreatedAt,
 	})
 	if err != nil {
 		return domain.ListGoalsResponse{}, err

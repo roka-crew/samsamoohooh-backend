@@ -34,13 +34,13 @@ func (t Topics) Last() Topic {
 }
 
 const (
-	TopicID        = "id"
-	TopicTitle     = "title"
-	TopicContent   = "content"
-	TopicCreatedAt = "created_at"
-	TopicUpdatedAt = "updated_at"
-	TopicDeletedAt = "deleted_at"
+	ModelTopicID        = "id"
+	ModelTopicTitle     = "title"
+	ModelTopicContent   = "content"
+	ModelTopicCreatedAt = "created_at"
+	ModelTopicUpdatedAt = "updated_at"
+	ModelTopicDeletedAt = "deleted_at"
 
-	TopicGoalID = "goal_id"
-	TopicUserID = "user_id"
+	ModelTopicGoalID = "goal_id"
+	ModelTopicUserID = "user_id"
 )

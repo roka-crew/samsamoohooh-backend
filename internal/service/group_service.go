@@ -208,7 +208,7 @@ func (s GroupService) StartDiscussion(ctx context.Context, request domain.StartD
 		return domain.StartDiscussionResponse{}, domain.ErrGoalNotFound
 	}
 
-	// (1) 요청한 사용자가, 시작하고자 하는 구룹에 속해있는지 확인
+	// (2) 요청한 사용자가, 시작하고자 하는 구룹에 속해있는지 확인
 	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
 		WithGroups:      true,
 		WithGroupsLimit: 1,
@@ -220,14 +220,11 @@ func (s GroupService) StartDiscussion(ctx context.Context, request domain.StartD
 	if err != nil {
 		return domain.StartDiscussionResponse{}, err
 	}
-	if foundUsers.IsEmpty() {
-		return domain.StartDiscussionResponse{}, domain.ErrUserNotFound
-	}
 	if foundUsers.First().Groups.IsEmpty() {
 		return domain.StartDiscussionResponse{}, domain.ErrUserNotInGroup
 	}
 
-	// (2) 구룹의 토론을 시작
+	// (3) 구룹의 사용자들 가져오기
 	foundGroups, err := s.groupStore.ListGroups(ctx, domain.ListGroupsParams{
 		IDs:   []uint{foundGoals.First().GroupID},
 		Limit: 1,
@@ -241,7 +238,14 @@ func (s GroupService) StartDiscussion(ctx context.Context, request domain.StartD
 		return domain.StartDiscussionResponse{}, domain.ErrGroupNotFound
 	}
 
-	foundUsers.First()
+	// (4) 목표의 상태를 완료로 변경
+	err = s.goalStore.PatchGoal(ctx, domain.PatchGoalParams{
+		ID:     request.GoalID,
+		Status: lo.ToPtr(domain.GoalStatusDiscussionDone),
+	})
+	if err != nil {
+		return domain.StartDiscussionResponse{}, err
+	}
 
 	return domain.StartDiscussionResponse{
 		UserNames:   foundGroups.First().Users.Nicknames(),

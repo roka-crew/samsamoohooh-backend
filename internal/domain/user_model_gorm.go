@@ -34,10 +34,10 @@ func (g Users) Last() User {
 }
 
 const (
-	UserID        = "id"
-	UserNickname  = "nickname"
-	UserBiography = "biography"
-	UserCreatedAt = "created_at"
-	UserUpdatedAt = "updated_at"
-	UserDeletedAt = "deleted_at"
+	ModelUserID        = "id"
+	ModelUserNickname  = "nickname"
+	ModelUserBiography = "biography"
+	ModelUserCreatedAt = "created_at"
+	ModelUserUpdatedAt = "updated_at"
+	ModelUserDeletedAt = "deleted_at"
 )

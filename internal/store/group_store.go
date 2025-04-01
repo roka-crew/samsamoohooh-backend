@@ -96,23 +96,23 @@ func (s GroupStore) PatchGroup(ctx context.Context, params domain.PatchGroupPara
 	var updates = make(map[string]any)
 
 	if params.Introduction != nil {
-		updates[domain.GroupIntroduction] = lo.FromPtr(params.Introduction)
+		updates[domain.ModelGroupIntroduction] = lo.FromPtr(params.Introduction)
 	}
 
 	if params.BookTitle != nil {
-		updates[domain.GroupBookTitle] = lo.FromPtr(params.BookTitle)
+		updates[domain.ModelGroupBookTitle] = lo.FromPtr(params.BookTitle)
 	}
 
 	if params.BookAuthor != nil {
-		updates[domain.GroupBookAuthor] = lo.FromPtr(params.BookAuthor)
+		updates[domain.ModelGroupBookAuthor] = lo.FromPtr(params.BookAuthor)
 	}
 
 	if params.BookPublisher != nil {
-		updates[domain.GroupBookPublisher] = lo.FromPtr(params.BookPublisher)
+		updates[domain.ModelGroupBookPublisher] = lo.FromPtr(params.BookPublisher)
 	}
 
 	if params.BookCurrentPage != nil {
-		updates[domain.GroupBookCurrentPage] = lo.FromPtr(params.BookCurrentPage)
+		updates[domain.ModelGroupBookCurrentPage] = lo.FromPtr(params.BookCurrentPage)
 	}
 
 	if err := s.db.WithContext(ctx).Model(&domain.Group{ID: params.ID}).Updates(updates).Error; err != nil {

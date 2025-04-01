@@ -22,6 +22,8 @@ definitions:
         type: integer
       page:
         type: integer
+      status:
+        $ref: '#/definitions/domain.GoalStatus'
     type: object
   domain.CreateGroupRequest:
     properties:
@@ -133,7 +135,17 @@ definitions:
         type: integer
       page:
         type: integer
+      status:
+        $ref: '#/definitions/domain.GoalStatus'
     type: object
+  domain.GoalStatus:
+    enum:
+    - DISCUSSION_PENDING
+    - DISCUSSION_DONE
+    type: string
+    x-enum-varnames:
+    - GoalStatusDiscussionPending
+    - GoalStatusDiscussionDone
   domain.GroupResponse:
     properties:
       bookAuthor:
@@ -271,6 +283,25 @@ definitions:
         maxLength: 12
         minLength: 2
         type: string
+    type: object
+  domain.StartDiscussionRequest:
+    properties:
+      goalID:
+        minimum: 1
+        type: integer
+    required:
+    - goalID
+    type: object
+  domain.StartDiscussionResponse:
+    properties:
+      topics:
+        items:
+          type: string
+        type: array
+      userNames:
+        items:
+          type: string
+        type: array
     type: object
   domain.TopicResponse:
     properties:
@@ -538,6 +569,29 @@ paths:
       security:
       - BearerAuth: []
       summary: 모임 탈퇴 ✅
+      tags:
+      - groups
+  /groups/start-discussion:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 토론 시작 정보
+        in: body
+        name: StartDiscussionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/domain.StartDiscussionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 모임 토론 정보
+          schema:
+            $ref: '#/definitions/domain.StartDiscussionResponse'
+      security:
+      - BearerAuth: []
+      summary: 모임 토론 시작 ✅
       tags:
       - groups
   /topics:

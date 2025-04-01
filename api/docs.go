@@ -374,6 +374,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/groups/start-discussion": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "모임 토론 시작 ✅",
+                "parameters": [
+                    {
+                        "description": "토론 시작 정보",
+                        "name": "StartDiscussionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.StartDiscussionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "모임 토론 정보",
+                        "schema": {
+                            "$ref": "#/definitions/domain.StartDiscussionResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/groups/{groupID}": {
             "patch": {
                 "security": [
@@ -692,6 +730,9 @@ const docTemplate = `{
                 },
                 "page": {
                     "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/domain.GoalStatus"
                 }
             }
         },
@@ -853,8 +894,22 @@ const docTemplate = `{
                 },
                 "page": {
                     "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/domain.GoalStatus"
                 }
             }
+        },
+        "domain.GoalStatus": {
+            "type": "string",
+            "enum": [
+                "DISCUSSION_PENDING",
+                "DISCUSSION_DONE"
+            ],
+            "x-enum-varnames": [
+                "GoalStatusDiscussionPending",
+                "GoalStatusDiscussionDone"
+            ]
         },
         "domain.GroupResponse": {
             "type": "object",
@@ -1055,6 +1110,35 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 12,
                     "minLength": 2
+                }
+            }
+        },
+        "domain.StartDiscussionRequest": {
+            "type": "object",
+            "required": [
+                "goalID"
+            ],
+            "properties": {
+                "goalID": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "domain.StartDiscussionResponse": {
+            "type": "object",
+            "properties": {
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "userNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

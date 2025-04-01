@@ -110,7 +110,7 @@ func (s TopicService) ListTopics(ctx context.Context, request domain.ListTopicsR
 		Limit:   request.Limit,
 
 		Order:   domain.SortOrderDesc,
-		OrderBy: domain.TopicCreatedAt,
+		OrderBy: domain.ModelTopicCreatedAt,
 	})
 	if err != nil {
 		return domain.ListTopicsResponse{}, err

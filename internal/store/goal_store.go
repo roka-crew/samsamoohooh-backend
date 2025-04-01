@@ -92,11 +92,15 @@ func (s GoalStore) PatchGoal(ctx context.Context, params domain.PatchGoalParams)
 	var updates = make(map[string]any)
 
 	if params.Page != nil {
-		updates[domain.GoalPage] = lo.FromPtr(params.Page)
+		updates[domain.ModelGoalPage] = lo.FromPtr(params.Page)
 	}
 
 	if params.Deadline != nil {
-		updates[domain.GoalDeadline] = lo.FromPtr(params.Deadline)
+		updates[domain.ModelGoalDeadline] = lo.FromPtr(params.Deadline)
+	}
+
+	if params.Status != nil {
+		updates[domain.ModelGoalStatus] = lo.FromPtr(params.Status)
 	}
 
 	if err := s.db.Model(domain.Goal{}).Where("id = ?", params.ID).Updates(updates).Error; err != nil {

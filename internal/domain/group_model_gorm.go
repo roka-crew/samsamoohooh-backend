@@ -35,14 +35,14 @@ func (g Groups) IDs() []uint {
 }
 
 const (
-	GroupID              = "id"
-	GroupIntroduction    = "introduction"
-	GroupBookTitle       = "book_title"
-	GroupBookAuthor      = "book_author"
-	GroupBookPublisher   = "book_publisher"
-	GroupBookMaxPage     = "book_max_page"
-	GroupBookCurrentPage = "book_current_page"
-	GroupCreatedAt       = "created_at"
-	GroupUpdatedAt       = "updated_at"
-	GroupDeletedAt       = "deleted_at"
+	ModelGroupID              = "id"
+	ModelGroupIntroduction    = "introduction"
+	ModelGroupBookTitle       = "book_title"
+	ModelGroupBookAuthor      = "book_author"
+	ModelGroupBookPublisher   = "book_publisher"
+	ModelGroupBookMaxPage     = "book_max_page"
+	ModelGroupBookCurrentPage = "book_current_page"
+	ModelGroupCreatedAt       = "created_at"
+	ModelGroupUpdatedAt       = "updated_at"
+	ModelGroupDeletedAt       = "deleted_at"
 )

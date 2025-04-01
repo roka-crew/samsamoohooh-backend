@@ -59,6 +59,7 @@ type PatchGoalParams struct {
 	// updates
 	Page     *int
 	Deadline *time.Time
+	Status   *GoalStatus
 }
 
 type DeleteGoalParams struct {
