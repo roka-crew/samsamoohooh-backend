@@ -516,7 +516,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "생성할 주제 정보",
-                        "name": "CreateTopicReqeust",
+                        "name": "CreateTopicRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1021,16 +1021,9 @@ const docTemplate = `{
         },
         "domain.PatchGoalRequest": {
             "type": "object",
-            "required": [
-                "goalID"
-            ],
             "properties": {
                 "deadline": {
                     "type": "string"
-                },
-                "goalID": {
-                    "type": "integer",
-                    "minimum": 1
                 },
                 "page": {
                     "type": "integer",
@@ -1040,9 +1033,6 @@ const docTemplate = `{
         },
         "domain.PatchGroupRequest": {
             "type": "object",
-            "required": [
-                "grouopID"
-            ],
             "properties": {
                 "bookAuthor": {
                     "type": "string",
@@ -1066,10 +1056,6 @@ const docTemplate = `{
                     "maxLength": 255,
                     "minLength": 1
                 },
-                "grouopID": {
-                    "type": "integer",
-                    "minimum": 1
-                },
                 "introduction": {
                     "type": "string",
                     "maxLength": 255
@@ -1078,9 +1064,6 @@ const docTemplate = `{
         },
         "domain.PatchTopicRequest": {
             "type": "object",
-            "required": [
-                "topicID"
-            ],
             "properties": {
                 "content": {
                     "type": "string",
@@ -1091,10 +1074,6 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 46,
                     "minLength": 4
-                },
-                "topicID": {
-                    "type": "integer",
-                    "minimum": 1
                 }
             }
         },

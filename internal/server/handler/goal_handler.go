@@ -13,7 +13,7 @@ type GoalHandler struct {
 	goalService *service.GoalService
 }
 
-func NewGoalHander(
+func NewGoalHandler(
 	goalService *service.GoalService,
 	server *server.Server,
 ) *GoalHandler {
@@ -38,7 +38,7 @@ func NewGoalHander(
 //	@Summary	새로운 목표 생성 ✅
 //	@Accept		json
 //	@Produce	json
-//	@Param		CreateGoalReqeust	body		domain.CreateGoalRequest	true	"생성할 목표 정보"
+//	@Param		CreateGoalRequest	body		domain.CreateGoalRequest	true	"생성할 목표 정보"
 //	@Success	201					{object}	domain.CreateGoalResponse	"성공적으로 목표를 생성한 경우"
 //	@Router		/goals [post]
 //	@Security	BearerAuth

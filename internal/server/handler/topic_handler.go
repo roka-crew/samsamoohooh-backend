@@ -38,7 +38,7 @@ func NewTopicHandler(
 //	@Summary	새로운 주제 생성 ✅
 //	@Accept		json
 //	@Produce	json
-//	@Param		CreateTopicReqeust	body		domain.CreateTopicRequest	true	"생성할 주제 정보"
+//	@Param		CreateTopicRequest	body		domain.CreateTopicRequest	true	"생성할 주제 정보"
 //	@Success	201					{object}	domain.CreateTopicResponse	"성공적으로 주제를 생성한 경우"
 //	@Router		/topics [post]
 //	@Security	BearerAuth
@@ -50,6 +50,10 @@ func (h TopicHandler) CreateTopic(c *fiber.Ctx) error {
 	)
 
 	if err = c.BodyParser(&request); err != nil {
+		return err
+	}
+
+	if request.RequestUserID, err = ctxutil.GetUserID(c); err != nil {
 		return err
 	}
 

@@ -80,7 +80,7 @@ func (s TopicStore) PatchTopic(ctx context.Context, params domain.PatchTopic) er
 		updates[domain.ModelTopicContent] = lo.FromPtr(params.Content)
 	}
 
-	err := s.db.WithContext(ctx).Model(&domain.Topic{ID: params.ID}).Error
+	err := s.db.WithContext(ctx).Model(&domain.Topic{ID: params.ID}).Updates(updates).Error
 	if err != nil {
 		return apperr.NewInternalError(err)
 	}
@@ -95,7 +95,7 @@ func (s TopicStore) DeleteTopic(ctx context.Context, params domain.DeleteTopic) 
 		db = db.Unscoped()
 	}
 
-	if err := db.Delete(domain.Topic{}, params.ID).Error; err != nil {
+	if err := db.Delete(&domain.Topic{ID: params.ID}).Error; err != nil {
 		return apperr.NewInternalError(err)
 	}
 

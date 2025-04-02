@@ -38,7 +38,7 @@ func main() {
 		fx.Invoke(
 			handler.NewUserHandler,
 			handler.NewGroupHandler,
-			handler.NewGoalHander,
+			handler.NewGoalHandler,
 			handler.NewTopicHandler,
 			handler.NewAuthHandler,
 		),

@@ -31,12 +31,12 @@ type TopicResponse struct {
 
 type PatchTopicRequest struct {
 	RequestUserID uint    `json:"-"         validate:"required,gte=1"`
-	TopicID       uint    `params:"topicID" validate:"required,gte=1"`
+	TopicID       uint    `json:"-"          params:"topicID" validate:"required,gte=1"`
 	Title         *string `json:"title"     validate:"omitempty,min=4,max=46"`
 	Content       *string `json:"content"   validate:"omitempty,min=4,max=128"`
 }
 
 type DeleteTopicRequest struct {
 	RequestUserID uint `json:"-"       validate:"required,gte=1"`
-	TopicID       uint `json:"topicID" validate:"required,gte=1"`
+	TopicID       uint `params:"topicID" validate:"required,gte=1"`
 }

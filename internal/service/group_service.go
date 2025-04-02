@@ -99,7 +99,7 @@ func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupR
 		WithUsers:    true,
 		WithUsersIDs: []uint{request.RequestUserID},
 
-		IDs:   []uint{request.GrouopID},
+		IDs:   []uint{request.GroupID},
 		Limit: 1,
 	})
 	if err != nil {
@@ -114,7 +114,7 @@ func (s GroupService) PatchGroup(ctx context.Context, request domain.PatchGroupR
 
 	// (2) 구룹 내용을 변경
 	err = s.groupStore.PatchGroup(ctx, domain.PatchGroupParams{
-		ID:              request.GrouopID,
+		ID:              request.GroupID,
 		Introduction:    request.Introduction,
 		BookTitle:       request.BookTitle,
 		BookAuthor:      request.BookAuthor,

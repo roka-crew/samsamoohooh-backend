@@ -220,14 +220,9 @@ definitions:
     properties:
       deadline:
         type: string
-      goalID:
-        minimum: 1
-        type: integer
       page:
         minimum: 1
         type: integer
-    required:
-    - goalID
     type: object
   domain.PatchGroupRequest:
     properties:
@@ -248,14 +243,9 @@ definitions:
         maxLength: 255
         minLength: 1
         type: string
-      grouopID:
-        minimum: 1
-        type: integer
       introduction:
         maxLength: 255
         type: string
-    required:
-    - grouopID
     type: object
   domain.PatchTopicRequest:
     properties:
@@ -267,11 +257,6 @@ definitions:
         maxLength: 46
         minLength: 4
         type: string
-      topicID:
-        minimum: 1
-        type: integer
-    required:
-    - topicID
     type: object
   domain.PatchUserRequest:
     properties:
@@ -648,7 +633,7 @@ paths:
       parameters:
       - description: 생성할 주제 정보
         in: body
-        name: CreateTopicReqeust
+        name: CreateTopicRequest
         required: true
         schema:
           $ref: '#/definitions/domain.CreateTopicRequest'

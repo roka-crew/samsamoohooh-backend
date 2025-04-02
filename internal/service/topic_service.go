@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/store"
 )
@@ -61,6 +60,7 @@ func (s TopicService) CreateTopic(ctx context.Context, request domain.CreateTopi
 	// (2) 토픽 생성
 	createdTopic, err := s.topicStore.CreateTopic(ctx, domain.CreateTopicParams{
 		GoalID:  request.GoalID,
+		UserID:  request.RequestUserID,
 		Title:   request.Title,
 		Content: request.Content,
 	})
@@ -162,7 +162,7 @@ func (s TopicService) PatchTopic(ctx context.Context, request domain.PatchTopicR
 		return domain.ErrUserNotInGroup
 	}
 
-	// (3) 토픽 삭제
+	// (3) 토픽 수정
 	err = s.topicStore.PatchTopic(ctx, domain.PatchTopic{
 		ID:      request.TopicID,
 		Title:   request.Title,
