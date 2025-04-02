@@ -44,28 +44,27 @@ func (m JWTMaker) VerifyToken(tokenString string) (*UserClaims, error) {
 		}
 		return m.config.JWT.Secret, nil
 	})
-
 	if err != nil {
 		// JWT 라이브러리에서 발생하는 오류를 우리 시스템 오류로 변환
 		if errors.Is(err, jwt.ErrTokenExpired) {
-			return nil, domain.ErrAuthExpiredToken.WithStatus(fiber.StatusUnauthorized) // 만료된 토큰
+			return nil, domain.ErrAuthExpiredToken
 		}
 		if errors.Is(err, jwt.ErrTokenMalformed) {
-			return nil, domain.ErrAuthMalformedToken.WithStatus(fiber.StatusUnauthorized) // 잘못된 형식의 토큰
+			return nil, domain.ErrAuthMalformedToken
 		}
 		if errors.Is(err, jwt.ErrTokenSignatureInvalid) {
-			return nil, domain.ErrAuthInvalidToken.WithStatus(fiber.StatusUnauthorized) // 서명이 유효하지 않음
+			return nil, domain.ErrAuthInvalidToken
 		}
 		if errors.Is(err, jwt.ErrTokenInvalidClaims) {
-			return nil, domain.ErrAuthInvalidClaims.WithStatus(fiber.StatusUnauthorized) // 클레임이 유효하지 않음
+			return nil, domain.ErrAuthInvalidClaims
 		}
 		// 기타 오류는 일반 인증 오류로 처리
-		return nil, domain.ErrAuthInvalidToken.WithStatus(fiber.StatusUnauthorized)
+		return nil, domain.ErrAuthInvalidToken
 	}
 
 	claims, ok := token.Claims.(*UserClaims)
 	if !ok {
-		return nil, domain.ErrAuthInvalidClaims.WithStatus(fiber.StatusUnauthorized) // 클레임 타입이 맞지 않을 때
+		return nil, domain.ErrAuthInvalidClaims
 	}
 
 	return claims, nil

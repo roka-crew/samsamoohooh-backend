@@ -403,7 +403,7 @@ paths:
       parameters:
       - description: 생성할 목표 정보
         in: body
-        name: CreateGoalReqeust
+        name: CreateGoalRequest
         required: true
         schema:
           $ref: '#/definitions/domain.CreateGoalRequest'

@@ -140,7 +140,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "생성할 목표 정보",
-                        "name": "CreateGoalReqeust",
+                        "name": "CreateGoalRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
