@@ -65,6 +65,7 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 //	@Param		Authorization	header		string					true	"Bearer 토큰"
 //	@Success	200				{object}	domain.ValidateResponse	"성공적으로 유효성 검증을 성공한 경우"
 //	@Router		/auth/validate [post]
+//	@Security	Authorization
 func (h AuthHandler) Validate(c *fiber.Ctx) error {
 	var (
 		request  domain.ValidateRequest
