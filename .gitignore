@@ -214,4 +214,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# configs 
+*.config.yaml
+
 # End of https://www.toptal.com/developers/gitignore/api/go,macos,windows,linux,goland
