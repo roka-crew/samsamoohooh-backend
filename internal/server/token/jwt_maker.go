@@ -29,7 +29,7 @@ func (m JWTMaker) CreateTokenString(id uint) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(m.config.JWT.Secret))
+	tokenString, err := token.SignedString(m.config.JWT.Secret)
 	if err != nil {
 		return "", apperr.NewInternalError(err)
 	}

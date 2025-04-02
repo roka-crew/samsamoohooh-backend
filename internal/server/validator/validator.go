@@ -7,7 +7,7 @@ import (
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	en_translations "github.com/go-playground/validator/v10/translations/en"
+	entranslations "github.com/go-playground/validator/v10/translations/en"
 	"github.com/roka-crew/samsamoohooh-backend/pkg/apperr"
 )
 
@@ -30,7 +30,7 @@ func init() {
 
 	engine = validator.New(validator.WithRequiredStructEnabled())
 
-	if err := en_translations.RegisterDefaultTranslations(engine, trans); err != nil {
+	if err := entranslations.RegisterDefaultTranslations(engine, trans); err != nil {
 		panic(fmt.Sprintf("Failed to register translations: %v", err))
 	}
 }
@@ -44,7 +44,7 @@ func Validate(s any) error {
 		for _, e := range validationErrors {
 			errorMessages = append(errorMessages, e.Translate(trans))
 		}
-		return apperr.New("ERR_VALIDATION_FAILED").WithStatus(400).WithData(errorMessages)
+		return apperr.New("ERR_VALIDATION_FAILED").WithStatus(400).WithDetail(errorMessages)
 	}
 
 	return nil

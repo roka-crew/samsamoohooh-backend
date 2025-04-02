@@ -30,14 +30,16 @@ type Goal struct {
 
 type CreateGoalParams = Goal
 
-type ListGoalsParmas struct {
+type ListGoalsParams struct {
 	// conditions
-	IDs         []uint
-	Pages       []int
-	Deadlines   []time.Time
-	Statuses    []GoalStatus
-	GtCreatedAt []time.Time
-	GroupIDs    []uint
+	IDs       []uint
+	Pages     []int
+	Deadlines []time.Time
+	Statuses  []GoalStatus
+	GroupIDs  []uint
+
+	GtCreatedAt time.Time
+	GtDeadline  time.Time
 
 	// order
 	Order   SortOrder

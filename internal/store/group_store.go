@@ -68,6 +68,10 @@ func (s GroupStore) ListGroups(ctx context.Context, params domain.ListGroupsPara
 				db = db.Where("id IN ?", params.WithUsersIDs)
 			}
 
+			if params.WithUsersLimit > 0 {
+				db = db.Limit(params.WithUsersLimit)
+			}
+
 			return db
 		})
 	}
@@ -129,7 +133,7 @@ func (s GroupStore) DeleteGroup(ctx context.Context, params domain.DeleteGroupPa
 		db = db.Unscoped()
 	}
 
-	err := db.Delete(&domain.User{}).Where("id = ?", params.ID).Error
+	err := db.Delete(&domain.Group{ID: params.ID}).Error
 	if err != nil {
 		return apperr.NewInternalError(err)
 	}

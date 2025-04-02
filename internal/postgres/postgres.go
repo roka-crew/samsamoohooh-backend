@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/roka-crew/samsamoohooh-backend/pkg/config"
 	"gorm.io/driver/postgres"
@@ -28,6 +29,7 @@ func New(
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		TranslateError: true,
 		Logger:         logger.Default.LogMode(logger.Silent),
+		NowFunc:        func() time.Time { return time.Now().UTC() },
 	})
 	if err != nil {
 		return nil, err

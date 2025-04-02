@@ -8,7 +8,7 @@ import (
 type Apperr struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
-	Data    any    `json:"data"`
+	Detail  any    `json:"detail,omitempty"`
 }
 
 func New(message string) *Apperr {
@@ -26,8 +26,8 @@ func (e *Apperr) WithStatus(status int) *Apperr {
 	return e
 }
 
-func (e *Apperr) WithData(data any) *Apperr {
-	e.Data = data
+func (e *Apperr) WithDetail(data any) *Apperr {
+	e.Detail = data
 	return e
 }
 

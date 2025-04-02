@@ -19,18 +19,18 @@ func (u Users) IsEmpty() bool {
 	return len(u) == 0
 }
 
-func (t Users) First() User {
-	if t.IsEmpty() {
+func (u Users) First() User {
+	if u.IsEmpty() {
 		return User{}
 	}
-	return t[0]
+	return u[0]
 }
 
-func (g Users) Last() User {
-	if g.IsEmpty() {
+func (u Users) Last() User {
+	if u.IsEmpty() {
 		return User{}
 	}
-	return g[len(g)-1]
+	return u[len(u)-1]
 }
 
 const (

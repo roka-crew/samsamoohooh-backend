@@ -73,18 +73,14 @@ func (s TopicStore) PatchTopic(ctx context.Context, params domain.PatchTopic) er
 	var updates = make(map[string]any)
 
 	if params.Title != nil {
-		updates["title"] = lo.FromPtr(params.Title)
+		updates[domain.ModelTopicTitle] = lo.FromPtr(params.Title)
 	}
 
 	if params.Content != nil {
-		updates["content"] = lo.FromPtr(params.Content)
+		updates[domain.ModelTopicContent] = lo.FromPtr(params.Content)
 	}
 
-	err := s.db.WithContext(ctx).
-		Model(&domain.Topic{}).
-		Where("id = ?", params.ID).
-		Updates(updates).
-		Error
+	err := s.db.WithContext(ctx).Model(&domain.Topic{ID: params.ID}).Error
 	if err != nil {
 		return apperr.NewInternalError(err)
 	}

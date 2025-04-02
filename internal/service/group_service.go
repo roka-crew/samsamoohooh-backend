@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/store"
 	"github.com/samber/lo"
@@ -190,12 +189,33 @@ func (s GroupService) LeaveGroup(ctx context.Context, request domain.LeaveGroupR
 		return err
 	}
 
+	// (3) 구룹의 남은 사용자가 없다면, 해당 구룹은 삭제
+	foundGroups, err := s.groupStore.ListGroups(ctx, domain.ListGroupsParams{
+		IDs: request.GroupIDs,
+
+		WithUsers:      true,
+		WithUsersLimit: 1,
+	})
+	if err != nil {
+		return err
+	}
+	for _, group := range foundGroups {
+		if group.Users.IsEmpty() {
+			err = s.groupStore.DeleteGroup(ctx, domain.DeleteGroupParams{
+				ID: group.ID,
+			})
+			if err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
 func (s GroupService) StartDiscussion(ctx context.Context, request domain.StartDiscussionRequest) (domain.StartDiscussionResponse, error) {
 	// (1) goalID가 존재하는지 확인
-	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParams{
 		IDs:   []uint{request.GoalID},
 		Limit: 1,
 

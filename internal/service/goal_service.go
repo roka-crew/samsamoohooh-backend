@@ -28,12 +28,17 @@ func NewGoalService(
 
 func (s *GoalService) CreateGoal(ctx context.Context, request domain.CreateGoalRequest) (domain.CreateGoalResponse, error) {
 	// Goal 생성 조건
-	// Goal은 2가지의 상태를 가집니다.
+	// Goal 은 2가지의 상태를 가집니다.
 	// 1. 진행중인 목표  (현재 시각이, 목표의 데드라인보다 과거임)
 	// 2. 데드라인이 마감된 목표 (현재 시각이, 목표의 데드라인보다 미래임)
 	// 조건 1:  진행중인 목표가 존재할 때는 새로운 목표를 생성할 수 없습니다.
 
-	// (1) 요청한 사용자가 해당 구룹에 속해있는지 확인
+	// (1) 새로 생성하고 하는 Deadline 은 현재 시각보다 미래어야 한다.
+	if request.Deadline.UTC().Before(time.Now().UTC()) {
+		return domain.CreateGoalResponse{}, domain.ErrGoalInvalidDeadline.WithDetail("deadline is in the future")
+	}
+
+	// (2) 요청한 사용자가 해당 구룹에 속해있는지 확인
 	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
 		IDs:   []uint{request.RequestUserID},
 		Limit: 1,
@@ -52,10 +57,11 @@ func (s *GoalService) CreateGoal(ctx context.Context, request domain.CreateGoalR
 		return domain.CreateGoalResponse{}, domain.ErrUserNotInGroup
 	}
 
-	// (2) 진행중인 목표가 존재하는지 확인
-	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
-		GroupIDs:    []uint{request.GroupID},
-		GtCreatedAt: []time.Time{request.Deadline},
+	// (3) 진행중인 목표가 존재하는지 확인
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParams{
+		GroupIDs:   []uint{request.GroupID},
+		Statuses:   []domain.GoalStatus{domain.GoalStatusDiscussionPending},
+		GtDeadline: time.Now().UTC(),
 	})
 	if err != nil {
 		return domain.CreateGoalResponse{}, err
@@ -64,13 +70,13 @@ func (s *GoalService) CreateGoal(ctx context.Context, request domain.CreateGoalR
 		return domain.CreateGoalResponse{}, domain.ErrGoalAlreadyExists
 	}
 
-	// (3) 새로운 목표 생성
+	// (4) 새로운 목표 생성
 	createdGoal, err := s.goalStore.CreateGoal(ctx, domain.CreateGoalParams{
 		UserID:  request.RequestUserID,
 		GroupID: request.GroupID,
 
 		Page:     request.Page,
-		Deadline: request.Deadline,
+		Deadline: request.Deadline.UTC(),
 		Status:   domain.GoalStatusDiscussionPending,
 	})
 	if err != nil {
@@ -106,7 +112,7 @@ func (s *GoalService) ListGoals(ctx context.Context, request domain.ListGoalsReq
 	}
 
 	// (2) 요청한 구룹의 목표 목록 조회
-	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParams{
 		GroupIDs: []uint{request.GroupID},
 		Limit:    request.Limit,
 
@@ -132,7 +138,7 @@ func (s *GoalService) ListGoals(ctx context.Context, request domain.ListGoalsReq
 
 func (s *GoalService) PatchGoal(ctx context.Context, request domain.PatchGoalRequest) error {
 	// (1) 수정하고자 하는 목표가 존재하는지 확인
-	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParams{
 		IDs:   []uint{request.GoalID},
 		Limit: 1,
 	})
@@ -177,7 +183,7 @@ func (s *GoalService) PatchGoal(ctx context.Context, request domain.PatchGoalReq
 
 func (s *GoalService) DeleteGoal(ctx context.Context, request domain.DeleteGoalRequest) error {
 	// (1) 삭제하고자 하는 목표가 존재하는지 확인
-	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParams{
 		IDs:   []uint{request.GoalID},
 		Limit: 1,
 	})

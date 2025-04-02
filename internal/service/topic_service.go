@@ -30,7 +30,7 @@ func NewTopicService(
 
 func (s TopicService) CreateTopic(ctx context.Context, request domain.CreateTopicRequest) (domain.CreateTopicResponse, error) {
 	// (1) 요청한 사용자가 생성할 목표의 구룹에 속해있는지 확인
-	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParams{
 		IDs:   []uint{request.GoalID},
 		Limit: 1,
 	})
@@ -58,6 +58,7 @@ func (s TopicService) CreateTopic(ctx context.Context, request domain.CreateTopi
 		return domain.CreateTopicResponse{}, domain.ErrUserNotInGroup
 	}
 
+	// (2) 토픽 생성
 	createdTopic, err := s.topicStore.CreateTopic(ctx, domain.CreateTopicParams{
 		GoalID:  request.GoalID,
 		Title:   request.Title,
@@ -76,7 +77,7 @@ func (s TopicService) CreateTopic(ctx context.Context, request domain.CreateTopi
 
 func (s TopicService) ListTopics(ctx context.Context, request domain.ListTopicsRequest) (domain.ListTopicsResponse, error) {
 	// (1) 요청한 사용자가 해당 구룹에 속해있는지 확인
-	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParmas{
+	foundGoals, err := s.goalStore.ListGoals(ctx, domain.ListGoalsParams{
 		IDs:   []uint{request.GoalID},
 		Limit: 1,
 	})

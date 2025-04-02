@@ -14,7 +14,7 @@ type UserService struct {
 	userStore *store.UserStore
 }
 
-func NewUserSerivce(
+func NewUserService(
 	userStore *store.UserStore,
 ) *UserService {
 	return &UserService{
@@ -23,7 +23,7 @@ func NewUserSerivce(
 }
 
 func (s UserService) CreateUser(ctx context.Context, request domain.CreateUserRequest) (domain.CreateUserResponse, error) {
-	// (1) 사용자 Nickname의 중복 여부를 검사
+	// (1) 사용자 Nickname 중복 여부를 검사
 	foundUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
 		Nicknames: []string{request.Nickname},
 	})

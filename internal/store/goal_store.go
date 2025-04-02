@@ -31,7 +31,7 @@ func (s GoalStore) CreateGoal(ctx context.Context, params domain.CreateGoalParam
 	return params, nil
 }
 
-func (s GoalStore) ListGoals(ctx context.Context, params domain.ListGoalsParmas) (domain.Goals, error) {
+func (s GoalStore) ListGoals(ctx context.Context, params domain.ListGoalsParams) (domain.Goals, error) {
 	db := s.db.WithContext(ctx)
 
 	if len(params.IDs) > 0 {
@@ -54,8 +54,12 @@ func (s GoalStore) ListGoals(ctx context.Context, params domain.ListGoalsParmas)
 		db = db.Where("group_id IN ?", params.GroupIDs)
 	}
 
-	if len(params.GtCreatedAt) > 0 {
+	if !params.GtCreatedAt.IsZero() {
 		db = db.Where("created_at > ?", params.GtCreatedAt)
+	}
+
+	if !params.GtDeadline.IsZero() {
+		db = db.Where("deadline > ?", params.GtDeadline)
 	}
 
 	if params.OrderBy != "" {
@@ -103,7 +107,7 @@ func (s GoalStore) PatchGoal(ctx context.Context, params domain.PatchGoalParams)
 		updates[domain.ModelGoalStatus] = lo.FromPtr(params.Status)
 	}
 
-	if err := s.db.Model(domain.Goal{}).Where("id = ?", params.ID).Updates(updates).Error; err != nil {
+	if err := s.db.WithContext(ctx).Model(domain.Goal{}).Where("id = ?", params.ID).Updates(updates).Error; err != nil {
 		return apperr.NewInternalError(err)
 	}
 

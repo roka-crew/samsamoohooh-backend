@@ -9,12 +9,12 @@ import (
 )
 
 func main() {
-	config, err := config.New("./configs/config.yaml")
+	cfg, err := config.New("./configs/config.yaml")
 	if err != nil {
 		log.Panicf("failed to new config: %v\n", err)
 	}
 
-	db, err := postgres.New(config)
+	db, err := postgres.New(cfg)
 	if err != nil {
 		log.Panicf("failed to connection postgres: %v\n", err)
 	}

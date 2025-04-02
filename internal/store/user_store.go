@@ -22,8 +22,8 @@ func NewUserStore(
 	}, nil
 }
 
-func (s UserStore) CreateUser(ctx context.Context, params domain.CreateUserParams) (domain.User, error) {
-	err := s.db.WithContext(ctx).Create(&params).Error
+func (u UserStore) CreateUser(ctx context.Context, params domain.CreateUserParams) (domain.User, error) {
+	err := u.db.WithContext(ctx).Create(&params).Error
 	if err != nil {
 		return domain.User{}, apperr.NewInternalError(err)
 	}
@@ -31,8 +31,8 @@ func (s UserStore) CreateUser(ctx context.Context, params domain.CreateUserParam
 	return params, nil
 }
 
-func (s UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams) (domain.Users, error) {
-	db := s.db.WithContext(ctx)
+func (u UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams) (domain.Users, error) {
+	db := u.db.WithContext(ctx)
 
 	if len(params.IDs) > 0 {
 		db = db.Where("id IN ?", params.IDs)
@@ -88,7 +88,7 @@ func (s UserStore) ListUsers(ctx context.Context, params domain.ListUsersParams)
 	return users, nil
 }
 
-func (s UserStore) PatchUser(ctx context.Context, params domain.PatchUserParams) error {
+func (u UserStore) PatchUser(ctx context.Context, params domain.PatchUserParams) error {
 	var updates = make(map[string]any)
 
 	if params.Nickname != nil {
@@ -99,7 +99,7 @@ func (s UserStore) PatchUser(ctx context.Context, params domain.PatchUserParams)
 		updates[domain.ModelUserBiography] = lo.FromPtr(params.Biography)
 	}
 
-	if err := s.db.WithContext(ctx).Model(&domain.User{ID: params.ID}).Updates(updates).Error; err != nil {
+	if err := u.db.WithContext(ctx).Model(&domain.User{ID: params.ID}).Updates(updates).Error; err != nil {
 		return apperr.NewInternalError(err)
 	}
 
@@ -128,7 +128,7 @@ func (u UserStore) DeleteUser(ctx context.Context, params domain.DeleteUserParam
 	return nil
 }
 
-func (s UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsParams) error {
+func (u UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsParams) error {
 	wantAppendGroups := domain.Groups{}
 	for _, groupID := range params.GroupIDs {
 		wantAppendGroups = append(wantAppendGroups, domain.Group{
@@ -136,7 +136,7 @@ func (s UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsP
 		})
 	}
 
-	err := s.db.WithContext(ctx).
+	err := u.db.WithContext(ctx).
 		Model(&domain.User{ID: params.UserID}).
 		Association("Groups").
 		Append(wantAppendGroups)
@@ -147,7 +147,7 @@ func (s UserStore) AppendGroups(ctx context.Context, params domain.AppendGroupsP
 	return nil
 }
 
-func (s UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsParams) error {
+func (u UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsParams) error {
 	wantRemoveGroups := domain.Groups{}
 	for _, groupID := range params.GroupIDs {
 		wantRemoveGroups = append(wantRemoveGroups, domain.Group{
@@ -155,7 +155,7 @@ func (s UserStore) RemoveGroups(ctx context.Context, params domain.RemoveGroupsP
 		})
 	}
 
-	err := s.db.WithContext(ctx).
+	err := u.db.WithContext(ctx).
 		Model(&domain.User{ID: params.UserID}).
 		Association("Groups").
 		Delete(wantRemoveGroups)

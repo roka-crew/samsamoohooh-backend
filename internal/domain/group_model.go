@@ -57,8 +57,9 @@ type ListGroupsParams struct {
 	OrderBy string
 
 	// relation
-	WithUsers    bool
-	WithUsersIDs []uint
+	WithUsers      bool
+	WithUsersIDs   []uint
+	WithUsersLimit int
 
 	WithGoals      bool
 	WithGoalsLimit int

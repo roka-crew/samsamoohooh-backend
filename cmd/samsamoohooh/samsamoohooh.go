@@ -25,7 +25,7 @@ func main() {
 			store.NewGoalStore,
 			store.NewTopicStore,
 
-			service.NewUserSerivce,
+			service.NewUserService,
 			service.NewGroupService,
 			service.NewGoalService,
 			service.NewTopicService,
