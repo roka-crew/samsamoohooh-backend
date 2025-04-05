@@ -51,6 +51,9 @@ func NewServer(
 	})
 
 	server.Get("/swagger/*", swagger.HandlerDefault)
+	server.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("pong")
+	})
 	server.Use(recover.New())
 
 	return server
