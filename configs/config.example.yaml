@@ -1,5 +1,5 @@
 name: "samsamoohooh"
-listen: "0.0.0.0:9190"
+listen: "0.0.0.0:80"
 env: "dev"
 
 postgres:
