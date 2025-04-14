@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+	"math/rand/v2"
 
 	"github.com/roka-crew/samsamoohooh-backend/internal/domain"
 	"github.com/roka-crew/samsamoohooh-backend/internal/store"
@@ -48,6 +50,45 @@ func (s UserService) CreateUser(ctx context.Context, request domain.CreateUserRe
 	}
 
 	return domain.CreateUserResponse{
+		UserID:    createdUser.ID,
+		Nickname:  createdUser.Nickname,
+		Biography: lo.FromPtr(createdUser.Biography),
+	}, nil
+}
+
+func (s UserService) CreateRandomUser(ctx context.Context) (domain.CreateRandomUserResponse, error) {
+	var randomNicknames = []string{"토이스토리", "푸딩", "별똥별", "오보에", "늑대", "고래", "보니하니", "트론본", "충만", "바순"}
+	randomNickname := randomNicknames[rand.IntN(len(randomNicknames))]
+
+	// (1) 가장 최신에 등록한 사용자의 ID 가져오기
+	latestUsers, err := s.userStore.ListUsers(ctx, domain.ListUsersParams{
+		OrderBy: domain.ModelUserID,
+		Order:   domain.SortOrderDesc,
+
+		Limit: 1,
+	})
+	if err != nil {
+		return domain.CreateRandomUserResponse{}, err
+	}
+
+	// (2) 식별자 정하기
+	var identifier = 1
+	if !latestUsers.IsEmpty() {
+		identifier = int(latestUsers.First().ID) + 1
+	}
+
+	// (3) 죄총 nickname 생성
+	finalNickname := fmt.Sprintf("%s%d", randomNickname, identifier)
+
+	// (4) 새로운 사용자 생성
+	createdUser, err := s.userStore.CreateUser(ctx, domain.CreateUserParams{
+		Nickname: finalNickname,
+	})
+	if err != nil {
+		return domain.CreateRandomUserResponse{}, err
+	}
+
+	return domain.CreateRandomUserResponse{
 		UserID:    createdUser.ID,
 		Nickname:  createdUser.Nickname,
 		Biography: lo.FromPtr(createdUser.Biography),

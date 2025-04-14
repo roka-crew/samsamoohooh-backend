@@ -11,6 +11,12 @@ type CreateUserResponse struct {
 	Biography string `json:"biography"`
 }
 
+type CreateRandomUserResponse struct {
+	UserID    uint   `json:"userID"`
+	Nickname  string `json:"nickname"`
+	Biography string `json:"biography"`
+}
+
 type PatchUserRequest struct {
 	// conditions
 	RequestUserID uint `json:"-" validate:"required,gte=1"`

@@ -50,6 +50,11 @@ const docTemplate = `{
         },
         "/auth/validate": {
             "post": {
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -695,6 +700,33 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/random": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "새로운 임의 사용자 생성 ✅",
+                "responses": {
+                    "201": {
+                        "description": "성공적으로 임의의 사용자를 생성한 경우",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateRandomUserResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -791,6 +823,20 @@ const docTemplate = `{
                 },
                 "introduction": {
                     "type": "string"
+                }
+            }
+        },
+        "domain.CreateRandomUserResponse": {
+            "type": "object",
+            "properties": {
+                "biography": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
                 }
             }
         },

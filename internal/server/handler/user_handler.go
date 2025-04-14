@@ -26,6 +26,7 @@ func NewUserHandler(
 	users := server.Group("/users")
 	{
 		users.Post("/", handler.CreateUser)
+		users.Post("/random", handler.CreateRanomUser)
 		users.Patch("/", authMiddleware.Authenticate, handler.PatchUser)
 		users.Delete("/", authMiddleware.Authenticate, handler.DeleteUser)
 	}
@@ -59,6 +60,29 @@ func (h UserHandler) CreateUser(c *fiber.Ctx) error {
 	}
 
 	response, err = h.userService.CreateUser(c.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(response)
+}
+
+// CreateRandomUser
+//
+//	@Tags		users
+//	@Summary	새로운 임의 사용자 생성 ✅
+//	@Accept		json
+//	@Produce	json
+//	@Success	201	{object}	domain.CreateRandomUserResponse	"성공적으로 임의의 사용자를 생성한 경우"
+//	@Router		/users/random [post]
+//	@Security	BearerAuth
+func (h UserHandler) CreateRanomUser(c *fiber.Ctx) error {
+	var (
+		response domain.CreateRandomUserResponse
+		err      error
+	)
+
+	response, err = h.userService.CreateRandomUser(c.Context())
 	if err != nil {
 		return err
 	}
