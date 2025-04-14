@@ -14,7 +14,6 @@ import (
 
 func main() {
 	fx.New(
-		fx.NopLogger,
 		fx.Supply("./configs/config.yaml"),
 		fx.Provide(
 			config.New,

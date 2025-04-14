@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -20,13 +21,13 @@ func New(path string) (*Config, error) {
 
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to open: %v", err)
 	}
 	defer file.Close()
 
 	err = yaml.NewDecoder(file).Decode(config)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed new decode: %v", err)
 	}
 
 	return config, nil
